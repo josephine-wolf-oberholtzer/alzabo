@@ -31,7 +31,7 @@ python-rtmidi
 requests-mock
 scikit-learn
 soundfile
-supriya[docs] == 24.1b3
+supriya[docs] == 24.5b1
 timm == 0.4.5
 torchaudio
 tqdm
