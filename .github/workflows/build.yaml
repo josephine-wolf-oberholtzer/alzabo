@@ -27,7 +27,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Pull image
-      run: docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+      run: docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest || true
     - name: Create LFS file list
       run: git lfs ls-files -l | cut -d ' ' -f1 | sort > .lfs-assets-id
     - name: Restore LFS cache
