@@ -97,6 +97,9 @@ pytest-cov: up-datastores ## Run pytest with coverage
 pytest-x: up-datastores ## Run pytest and fail fast
 	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest -x
 
+pytest-sw: up-datastores ## Run pytest and fail fast
+	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest --sw
+
 test: reformat lint pytest-cov
 
 ### MISC
