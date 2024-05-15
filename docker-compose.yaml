@@ -1,0 +1,163 @@
+services:
+
+  api:
+    build:
+      cache_from:
+      - ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+      context: .
+      dockerfile: ./Dockerfile
+    command:
+    - gunicorn
+    - praetor.api:create_app()
+    environment:
+      GUNICORN_CMD_ARGS: >-
+        --access-logfile -
+        --access-logformat '%a %t "%r" %s %b %Tf "%{Referer}i" "%{User-Agent}i"'
+        --bind 0.0.0.0:8000
+        --reload
+        --workers 2
+        --worker-class aiohttp.GunicornUVLoopWebWorker
+      PRAETOR_API_AUTH_ENABLED: "${PRAETOR_API_AUTH_ENABLED:-false}"
+      PRAETOR_AST_ENABLED: "${PRAETOR_AST_ENABLED:-true}"
+      PRAETOR_CONFIG_PATH: "${PRAETOR_CONFIG_PATH:-}"
+      PRAETOR_S3_ACCESS_KEY_ID: minioadmin
+      PRAETOR_S3_ENDPOINT_URL: http://minio:9000
+      PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
+      PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
+    image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    ports:
+    - 8000:8000
+    volumes:
+    - ./:/app
+    - ./data/:/data
+
+  worker:
+    build:
+      cache_from:
+      - ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+      context: .
+      dockerfile: ./Dockerfile
+    command:
+    - watchmedo
+    - auto-restart
+    - --directory
+    - ./praetor
+    - --recursive
+    - --pattern
+    - '*.py'
+    - --
+    - celery
+    - -A
+    - praetor.worker.app:celery
+    - worker
+    - --loglevel=INFO
+    environment:
+      PRAETOR_AST_ENABLED: "${PRAETOR_AST_ENABLED:-true}"
+      PRAETOR_CONFIG_PATH: "${PRAETOR_CONFIG_PATH:-}"
+      PRAETOR_S3_ACCESS_KEY_ID: minioadmin
+      PRAETOR_S3_ENDPOINT_URL: http://minio:9000
+      PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
+      PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
+    image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    volumes:
+    - ./:/app
+    - ./data/:/data
+
+  attu:
+    environment:
+      MILVUS_URL: milvus:19530
+    image: zilliz/attu:v2.3.2
+    ports:
+    - 3000:3000 
+
+  etcd:
+    command:
+    - etcd
+    - -advertise-client-urls=http://127.0.0.1:2379
+    - -listen-client-urls
+    - http://0.0.0.0:2379
+    - --data-dir
+    - /etcd
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: 1000
+      ETCD_QUOTA_BACKEND_BYTES: 4294967296
+      ETCD_SNAPSHOT_COUNT: 50000
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: 
+      - CMD
+      - etcdctl
+      - endpoint
+      - health
+      timeout: 20s
+    image: quay.io/coreos/etcd:v3.5.5
+    volumes:
+    - ./tmp/etcd:/etcd
+
+  minio:
+    command:
+    - minio
+    - server
+    - /minio_data
+    - --console-address
+    - :9001
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:9000/minio/health/live
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    ports:
+    - 9000:9000
+    - 9001:9001
+    volumes:
+    - ./tmp/minio:/minio_data
+
+  milvus:
+    command:
+    - milvus
+    - run
+    - standalone
+    depends_on:
+    - etcd
+    - minio
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MINIO_BUCKET_NAME: milvus
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:9091/healthz
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    image: milvusdb/milvus:v2.3.5
+    ports:
+    - 19530:19530
+    - 9091:9091
+    security_opt:
+    - seccomp:unconfined
+    volumes:
+    - ./tmp/milvus:/var/lib/milvus
+
+  redis:
+    command:
+    - redis-server
+    - --appendonly
+    - "yes"
+    image: redis
+    volumes:
+    - ./tmp/redis:/data

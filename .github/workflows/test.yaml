@@ -1,0 +1,94 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+    - main
+  push:
+    branches:
+    - main
+  schedule:
+  - cron: "0 0 * * 0"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+
+jobs:
+
+  lint-infra:
+    name: Lint infra
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install kubeval
+      run: |
+        wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+        tar xf kubeval-linux-amd64.tar.gz
+        sudo cp kubeval /usr/local/bin
+    - name: Kustomize build
+      run: kubectl kustomize kubernetes/praetor/base
+    - name: Kubeval
+      run: make kubeval
+
+  lint-backend:
+    name: Lint backend
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pull image
+      run: docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    - name: Build image
+      run: make build
+    - name: Black
+      run: make black-check
+    - name: Isort
+      run: make isort-check
+    - name: Flake8
+      run: make flake8
+    - name: Mypy
+      run: make mypy
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pull image
+      run: docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    - name: Create LFS file list
+      run: git lfs ls-files -l | cut -d ' ' -f1 | sort > .lfs-assets-id
+    - name: Restore LFS cache
+      uses: actions/cache@v3
+      id: lfs-cache
+      with:
+        path: .git/lfs
+        key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+        restore-keys: |
+          ${{ runner.os }}-lfs-
+    - name: Git LFS Pull
+      run: git lfs pull
+    - name: Build image
+      run: make build
+    - name: Bring up containers
+      run: make up
+    - name: Pytest
+      run: make pytest-cov
+      timeout-minutes: 20

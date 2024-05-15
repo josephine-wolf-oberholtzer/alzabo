@@ -1,0 +1,13 @@
+services:
+
+milvus:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities:
+              - gpu
+              device_ids:
+              - "0"
+    image: milvusdb/milvus:v2.3.0-gpu

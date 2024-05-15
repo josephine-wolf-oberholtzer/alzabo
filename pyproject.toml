@@ -1,0 +1,38 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["Cython", "setuptools>=40.6.0", "wheel"]
+
+[project]
+authors = [
+  {name = "Josiah Wolf Oberholtzer", email = "josiah.oberholtzer@gmail.com"},
+  {name = "Marek Poliks", email = "mpoliks@gmail.com"},
+]
+dynamic = ["dependencies"]
+name = "praetor"
+readme = "README.md"
+requires-python = ">= 3.11, < 3.12"
+version = "24.1b2"
+
+[tool.black]
+skip-magic-trailing-comma = true
+target-version = ["py310"]
+
+[tool.isort]
+case_sensitive = true
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true
+plugins = [
+    "pydantic.mypy",
+    "supriya.ext.mypy",
+]
+
+[tool.pytest.ini_options]
+addopts = "-vv --durations=10 --cov-branch"
+
+[tool.setuptools]
+packages = ["praetor"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}

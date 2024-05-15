@@ -1,0 +1,67 @@
+analysis:
+  ast_collection_prefix: ast
+  hops:
+  - 500
+  lengths:
+  - 500
+  - 1250
+  - 2500
+  scsynth_collection_prefix: scsynth
+  scsynth_indices:
+  - alias: null
+    features:
+    - r:f0:mean
+    - r:mfcc:13
+    - r:onsets
+    - r:rms:mean
+    pitched: true
+  - alias: chroma-z
+    features:
+    - r:chroma
+    - r:mfcc:13
+    - r:onsets
+    - r:rms:mean
+    pitched: false
+api:
+  auth_enabled: false
+  auth_secret: change-me
+  key: null
+  url: http://api:8000/
+application:
+  analyzer_class: praetor.client.analyzer.OnlineScsynthAnalyzer
+  pattern_factory_class: praetor.client.pattern_factory.PatternFactory
+ast:
+  checkpoint_path: data/ast/audioset_model.pth
+  enabled: false
+  labels_path: data/ast/audioset_labels.csv
+midi:
+  client_class: praetor.client.midi_client.MidiClient
+  devices: {}
+  enabled: false
+milvus:
+  url: http://milvus:19530/
+monome:
+  arc: []
+  client_class: praetor.client.monome_client.MonomeClient
+  enabled: false
+open_telemetry:
+  enabled: false
+redis:
+  url: redis://redis:6379/0
+s3:
+  access_key_id: minioadmin
+  data_bucket: praetor-ai-data
+  endpoint_url: http://minio:9000
+  secret_access_key: minioadmin
+  uploads_bucket: praetor-ai-uploads
+scsynth:
+  block_size: 256
+  enabled: true
+  executable: scsynth
+  input_bus: 16
+  input_count: 16
+  input_device: ES-9
+  memory_size: 1048576
+  output_bus: 8
+  output_count: 16
+  output_device: ES-9

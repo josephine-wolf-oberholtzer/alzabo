@@ -1,0 +1,44 @@
+aiobotocore
+aiodns
+aiofiles
+aiohttp
+aiohttp-apispec == 3.0.0b2
+aiohttp-cors
+aioprometheus[aiohttp]
+black
+boto3
+boto3-stubs[s3]
+celery[redis]
+click
+flake8
+gunicorn
+isort
+moto
+mypy
+numpy
+pip-tools
+pydantic-settings
+pyjwt
+pymilvus == 2.3.2
+pymonome
+pytest
+pytest-aiohttp
+pytest-asyncio
+pytest-cov
+pytest-mock
+pytest-rerunfailures
+python-rtmidi
+requests-mock
+scikit-learn
+soundfile
+supriya[docs] == 24.1b3
+timm == 0.4.5
+torchaudio
+tqdm
+types-aiofiles
+types-pyyaml
+types-requests
+types-ujson
+ujson
+uvloop
+watchdog[watchmedo]

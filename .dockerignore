@@ -1,0 +1,7 @@
+**/*.pyc
+**/*tmp*
+**/__pycache__
+.git/
+docker-compose*
+kubernetes
+terraform

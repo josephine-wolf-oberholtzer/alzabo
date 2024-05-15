@@ -1,0 +1,4 @@
+.eslintrc.cjs
+.prettierrc.js
+dist/
+node_modules/

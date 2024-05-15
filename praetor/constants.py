@@ -1,0 +1,65 @@
+from enum import StrEnum
+
+# File names
+AST_ENTRIES_FILENAME = "ast-entries-{hop}-{length}.json"
+AUDIO_FILENAME = "audio.wav"
+SCSYNTH_ANALYSIS_RAW_FILENAME = "scsynth-analysis-raw.json"
+SCSYNTH_ANALYSIS_WHITENED_FILENAME = "scsynth-analysis-whitened.json"
+SCSYNTH_ENTRIES_FILENAME = "scsynth-entries-{hop}-{length}.json"
+
+# Scsynth
+SCSYNTH_ANALYSIS_SIZE = 62
+
+
+class JobStatus(StrEnum):
+    UPLOADING = "UPLOADING"
+    STAGING = "STAGING"
+    STAGED = "STAGED"
+    TRANSCODING = "TRANSCODING"
+    TRANSCODED = "TRANSCODED"
+    HASHING = "HASHING"
+    HASHED = "HASHED"
+    ANALYZING = "ANALYZING"
+    ANALYZED = "ANALYZED"
+    PARTITIONING = "PARTITIONING"
+    PARTITIONED = "PARTITIONED"
+    LABELING = "LABELING"
+    LABELED = "LABELED"
+    INSERTING = "INSERTING"
+    INSERTED = "INSERTED"
+
+
+class ScsynthFeatures(StrEnum):
+    IS_VOICED = "is_voiced"
+    RAW_CENTROID_MEAN = "r:centroid:mean"
+    RAW_CENTROID_STD = "r:centroid:std"
+    RAW_CHROMA = "r:chroma"
+    RAW_F0_MEAN = "r:f0:mean"
+    RAW_F0_STD = "r:f0:std"
+    RAW_FLATNESS_MEAN = "r:flatness:mean"
+    RAW_FLATNESS_STD = "r:flatness:std"
+    RAW_MFCC = "r:mfcc"
+    RAW_MFCC_13 = "r:mfcc:13"
+    RAW_ONSETS = "r:onsets"
+    RAW_PEAK_MEAN = "r:peak:mean"
+    RAW_PEAK_STD = "r:peak:std"
+    RAW_RMS_MEAN = "r:rms:mean"
+    RAW_RMS_STD = "r:rms:std"
+    RAW_ROLLOFF_MEAN = "r:rolloff:mean"
+    RAW_ROLLOFF_STD = "r:rolloff:std"
+    WHITENED_CENTROID_MEAN = "w:centroid:mean"
+    WHITENED_CENTROID_STD = "w:centroid:std"
+    WHITENED_CHROMA = "w:chroma"
+    WHITENED_F0_MEAN = "w:f0:mean"
+    WHITENED_F0_STD = "w:f0:std"
+    WHITENED_FLATNESS_MEAN = "w:flatness:mean"
+    WHITENED_FLATNESS_STD = "w:flatness:std"
+    WHITENED_MFCC = "w:mfcc"
+    WHITENED_MFCC_13 = "w:mfcc:13"
+    WHITENED_ONSETS = "w:onsets"
+    WHITENED_PEAK_MEAN = "w:peak:mean"
+    WHITENED_PEAK_STD = "w:peak:std"
+    WHITENED_RMS_MEAN = "w:rms:mean"
+    WHITENED_RMS_STD = "w:rms:std"
+    WHITENED_ROLLOFF_MEAN = "w:rolloff:mean"
+    WHITENED_ROLLOFF_STD = "w:rolloff:std"
