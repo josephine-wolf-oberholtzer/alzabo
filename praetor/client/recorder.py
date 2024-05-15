@@ -34,12 +34,12 @@ class Recorder:
         # ... setup synthdef
         for duration_ms, hop_ms, callback in self.triples:
             # self.clock.cue()
-            ...
+            pass
 
     async def teardown(self) -> None:
         # ... rm clock callbacks
         # ... rm node, buffer, osc callbacks
-        ...
+        pass
 
     async def clock_callback(self):
         with self.context.at():
@@ -53,4 +53,4 @@ class Recorder:
                     self.node = self.context.add_node()
 
     async def n_end_callback(self):
-        ...
+        pass

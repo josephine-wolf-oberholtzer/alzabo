@@ -19,7 +19,7 @@ class PatternFactoryCallback(Protocol):
     def __call__(
         self, buffers: Sequence[Buffer], reverb_bus_group: BusGroup
     ) -> Pattern:
-        ...
+        pass
 
 
 class PatternFactory:

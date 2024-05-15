@@ -1,6 +1,7 @@
 """
 Audio upload routes
 """
+
 import logging
 import struct
 from uuid import uuid4
@@ -150,7 +151,7 @@ async def upload(request: web.Request) -> web.Response:
     """
     job_id = str(uuid4())
     staging_id = str(uuid4())
-    async for field in (await request.multipart()):
+    async for field in await request.multipart():
         print(f"{request=} {field=} {field.name=}")
         if field.name != "file":
             continue

@@ -38,7 +38,7 @@ class MidiClient(Listener):
             )
 
     async def notify(self, performance_config: dict[str, float]) -> None:
-        ...
+        pass
 
     async def setup(self) -> None:
         logger.info(f"Setting up {type(self).__name__} ...")

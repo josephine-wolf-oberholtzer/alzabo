@@ -27,10 +27,10 @@ logger = logging.getLogger(__name__)
 
 class SetupTeardown(Protocol):
     async def setup(self) -> None:
-        ...
+        pass
 
     async def teardown(self) -> None:
-        ...
+        pass
 
 
 class PerformanceConfig(TypedDict):
