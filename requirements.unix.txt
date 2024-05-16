@@ -302,7 +302,7 @@ marshmallow==3.21.2
     # via
     #   environs
     #   webargs
-matplotlib==3.8.4
+matplotlib==3.9.0
     # via supriya
 matplotlib-inline==0.1.7
     # via
@@ -653,7 +653,7 @@ sphinxext-opengraph==0.9.1
     # via supriya
 stack-data==0.6.3
     # via ipython
-supriya[docs]==24.5b1
+supriya[docs]==24.5b2
     # via -r requirements.in
 sympy==1.12
     # via torch
