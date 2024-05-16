@@ -40,7 +40,7 @@ def build_aux_send(channel_count=2) -> SynthDef:
 
 def build_basic_playback(channel_count=2) -> SynthDef:
     with SynthDefBuilder(amplitude=1.0, buffer_id=0, out=0, panning=0) as builder:
-        in_ = PlayBuf.ar(builder["buffer_id"], channel_count=1, loop=0)
+        in_ = PlayBuf.ar(buffer_id=builder["buffer_id"], channel_count=1, loop=0)
         envelope = Line.kr(
             duration=BufDur.kr(buffer_id=builder["buffer_id"]),
             done_action=DoneAction.FREE_SYNTH,

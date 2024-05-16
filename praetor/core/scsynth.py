@@ -198,9 +198,9 @@ def build_offline_analysis_synthdef(
     @synthdef()
     def analysis(in_, buffer_id, duration):
         source = In.ar(bus=in_)
-        phase = Line.kr(
-            start=0, stop=BufFrames.kr(buffer_id) - 1, duration=duration
-        ).floor()
+        phase = math.floor(Line.kr(
+            start=0, stop=BufFrames.kr(buffer_id=buffer_id) - 1, duration=duration
+        ))
         analysis_source = core_synthdef_analysis(
             source,
             frame_length=frame_length,

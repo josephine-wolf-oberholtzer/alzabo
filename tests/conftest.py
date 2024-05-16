@@ -32,8 +32,8 @@ def logging_setup(caplog) -> None:
 @pytest.fixture(autouse=True, scope="session")
 def jackd_dummy_process() -> Generator:
     command = ["jackd", "-r", "-ddummy", "-r44100", "-p1024"]
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(1)
+    process = subprocess.Popen(command)
+    time.sleep(5)
     yield
     process.terminate()
     process.wait()

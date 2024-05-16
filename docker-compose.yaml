@@ -6,6 +6,7 @@ services:
       - ghcr.io/josephine-wolf-oberholtzer/praetor:latest
       context: .
       dockerfile: ./Dockerfile
+    cap_add: [SYS_NICE]
     command:
     - gunicorn
     - praetor.api:create_app()
@@ -27,6 +28,10 @@ services:
     image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
     ports:
     - 8000:8000
+    shm_size: 256m
+    ulimits:
+      memlock: -1
+      rtprio: 99
     volumes:
     - ./:/app
     - ./data/:/data
