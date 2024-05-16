@@ -39,6 +39,10 @@ jobs:
     name: Lint backend
     runs-on: ubuntu-latest
     steps:
+    - name: Remove unnecessary files
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - uses: actions/checkout@v4
     - name: Log in to the Container registry
       uses: docker/login-action@v3
@@ -64,6 +68,10 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+    - name: Remove unnecessary files
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: Checkout
       uses: actions/checkout@v4
     - name: Log in to the Container registry
