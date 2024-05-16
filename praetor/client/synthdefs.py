@@ -18,7 +18,7 @@ from supriya.ugens import (
     PanAz,
     PlayBuf,
     ReplaceOut,
-    UGenMethodMixin,
+    UGenOperable,
 )
 
 
@@ -57,7 +57,7 @@ def build_basic_playback(channel_count=2) -> SynthDef:
 def hdverb(in_=0, out=0, decay=3.5, lpf1=2000, lpf2=6000, predelay=0.025) -> None:
     comb_count = 16 // 2
     allpass_count = 8
-    source: UGenMethodMixin = In.ar(bus=in_, channel_count=1)
+    source = In.ar(bus=in_, channel_count=1)
     source = DelayN.ar(
         source=source, maximum_delay_time=0.5, delay_time=predelay.clip(0.0001, 0.5)
     )
@@ -69,7 +69,7 @@ def hdverb(in_=0, out=0, decay=3.5, lpf1=2000, lpf2=6000, predelay=0.025) -> Non
                     maximum_delay_time=0.1,
                     delay_time=LFNoise2.kr(
                         frequency=ExpRand.ir(minimum=0.02, maximum=0.04)
-                    ).exponential_range(0.02, 0.099),
+                    ).scale(-1, 1, 0.02, 0.099, exponential=True),
                     decay_time=decay,
                 ),
                 frequency=lpf1,
@@ -84,7 +84,7 @@ def hdverb(in_=0, out=0, decay=3.5, lpf1=2000, lpf2=6000, predelay=0.025) -> Non
             maximum_delay_time=0.1,
             delay_time=LFNoise2.kr(
                 frequency=ExpRand.ir(minimum=0.02, maximum=0.04)
-            ).exponential_range(0.02, 0.099),
+            ).scale(-1, 1, 0.02, 0.099, exponential=True),
             decay_time=decay,
         )
     source = LeakDC.ar(source=source)
@@ -94,9 +94,9 @@ def hdverb(in_=0, out=0, decay=3.5, lpf1=2000, lpf2=6000, predelay=0.025) -> Non
 
 @synthdef()
 def limiter(in_: float, out: float) -> None:
-    source: UGenMethodMixin = In.ar(bus=in_, channel_count=1)
-    bands: list[UGenMethodMixin] = []
-    rest: UGenMethodMixin = source
+    source = In.ar(bus=in_, channel_count=1)
+    bands: list[UGenOperable] = []
+    rest = source
     for frequency in [150, 1500, 6000]:
         band = LPF.ar(source=rest, frequency=frequency)
         bands.append(band)

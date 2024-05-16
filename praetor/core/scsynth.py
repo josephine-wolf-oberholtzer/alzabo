@@ -144,13 +144,13 @@ def core_synthdef_analysis(
     The core UGen graph shared by online and offline analysis SynthDefs.
     """
     peak = Amplitude.ar(source=source).amplitude_to_db()
-    rms = LPF.ar(source=source * source, frequency=10.0).square_root().amplitude_to_db()
+    rms = LPF.ar(source=source * source, frequency=10.0).sqrt().amplitude_to_db()
     frequency, is_voiced = Pitch.kr(
         source=source,
         max_frequency=pitch_detection_frequency_max,
         min_frequency=pitch_detection_frequency_min,
     )
-    pv_chain = FFT.kr(buffer_id=LocalBuf(frame_length), source=source, hop=hop_ratio)
+    pv_chain = FFT.kr(source=source, hop=hop_ratio, window_size=frame_length)
     is_onset = Onsets.kr(
         pv_chain=pv_chain,
         floor_=0.000001,
