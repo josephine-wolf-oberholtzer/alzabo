@@ -33,7 +33,7 @@ from supriya.ugens import (
     SpecFlatness,
     SpecPcile,
 )
-from supriya.ugens.bases import UGen, param, ugen
+from supriya.ugens.core import UGen, param, ugen
 
 from ..config import ScsynthIndexConfig, config
 from ..constants import SCSYNTH_ANALYSIS_SIZE, ScsynthFeatures
