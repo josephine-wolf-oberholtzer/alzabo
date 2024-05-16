@@ -9,7 +9,13 @@ def test_hdverb():
         synthdef:
             name: hdverb
             ugens:
-            -   Control.kr: null
+            -   Control.kr:
+                    decay: 3.5
+                    in_: 0.0
+                    lpf1: 2000.0
+                    lpf2: 6000.0
+                    out: 0.0
+                    predelay: 0.025
             -   In.ar:
                     bus: Control.kr[1:in_]
             -   Clip.kr:
@@ -338,7 +344,9 @@ def test_limiter():
         synthdef:
             name: limiter
             ugens:
-            -   Control.kr: null
+            -   Control.kr:
+                    in_: 0.0
+                    out: 0.0
             -   In.ar:
                     bus: Control.kr[0:in_]
             -   LPF.ar/0:

@@ -334,7 +334,10 @@ def test_build_offline_analysis_synthdef() -> None:
         synthdef:
             name: analysis
             ugens:
-            -   Control.kr: null
+            -   Control.kr:
+                    buffer_id: 0.0
+                    duration: 0.0
+                    in_: 0.0
             -   In.ar:
                     bus: Control.kr[2:in_]
             -   Amplitude.ar:
@@ -388,7 +391,7 @@ def test_build_offline_analysis_synthdef() -> None:
                     hop: 0.25
                     window_type: 0.0
                     active: 1.0
-                    window_size: 0.0
+                    window_size: 2048.0
             -   Onsets.kr:
                     pv_chain: FFT.kr[0]
                     threshold: 0.01
@@ -516,7 +519,8 @@ def test_build_online_analysis_synthdef_scsynth() -> None:
         synthdef:
             name: analysis
             ugens:
-            -   Control.kr: null
+            -   Control.kr:
+                    in_: 0.0
             -   In.ar:
                     bus: Control.kr[0:in_]
             -   Amplitude.ar:
@@ -565,7 +569,7 @@ def test_build_online_analysis_synthdef_scsynth() -> None:
                     hop: 0.25
                     window_type: 0.0
                     active: 1.0
-                    window_size: 0.0
+                    window_size: 2048.0
             -   Onsets.kr:
                     pv_chain: FFT.kr[0]
                     threshold: 0.01
@@ -702,7 +706,8 @@ def test_build_online_analysis_synthdef_supernova() -> None:
         synthdef:
             name: analysis
             ugens:
-            -   Control.kr: null
+            -   Control.kr:
+                    in_: 0.0
             -   In.ar:
                     bus: Control.kr[0:in_]
             -   Amplitude.ar:
@@ -751,7 +756,7 @@ def test_build_online_analysis_synthdef_supernova() -> None:
                     hop: 0.25
                     window_type: 0.0
                     active: 1.0
-                    window_size: 0.0
+                    window_size: 2048.0
             -   Onsets.kr:
                     pv_chain: FFT.kr[0]
                     threshold: 0.01
