@@ -1,9 +1,9 @@
 import asyncio
 import logging
-from typing import Iterable
+from typing import Iterable, cast
 from uuid import UUID, uuid4
 
-from supriya import AsyncServer, BusGroup, CalculationRate, Group
+from supriya import AsyncServer, Buffer, BusGroup, CalculationRate, Group
 from supriya.clocks import AsyncClock, ClockContext
 from supriya.osc import OscCallback, OscMessage
 from supriya.patterns import Event, NoteEvent, PatternPlayer, Priority, StopEvent
@@ -144,7 +144,7 @@ class Performer:
             if (buffer_id := event.kwargs.get("buffer_id")) is not None:
                 # print("IDS", "NODE", int(node_id), "BUFFER", int(buffer_id))
                 self.buffer_manager.increment(
-                    reference=node_id, buffer_id=int(buffer_id)
+                    reference=node_id, buffer_id=int(cast(Buffer, buffer_id))
                 )
         elif isinstance(event, StopEvent):
             self.buffer_manager.decrement(player.uuid)
