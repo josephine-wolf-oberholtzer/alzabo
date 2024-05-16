@@ -124,11 +124,7 @@ async def test_single(
         ),
         OscMessage("/sync", 2),
         OscBundle(
-            contents=(
-                OscMessage(
-                    "/s_new", synthdef.actual_name, 1006, 0, 1001, "buffer_id", 0.0
-                ),
-            ),
+            contents=(OscMessage("/s_new", synthdef.actual_name, 1006, 0, 1001),),
             timestamp=base_timestamp,
         ),
         OscBundle(

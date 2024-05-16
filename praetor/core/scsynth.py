@@ -23,7 +23,6 @@ from supriya.ugens import (
     Impulse,
     In,
     Line,
-    LocalBuf,
     Onsets,
     Pitch,
     SampleRate,
@@ -198,9 +197,11 @@ def build_offline_analysis_synthdef(
     @synthdef()
     def analysis(in_, buffer_id, duration):
         source = In.ar(bus=in_)
-        phase = math.floor(Line.kr(
-            start=0, stop=BufFrames.kr(buffer_id=buffer_id) - 1, duration=duration
-        ))
+        phase = math.floor(
+            Line.kr(
+                start=0, stop=BufFrames.kr(buffer_id=buffer_id) - 1, duration=duration
+            )
+        )
         analysis_source = core_synthdef_analysis(
             source,
             frame_length=frame_length,
