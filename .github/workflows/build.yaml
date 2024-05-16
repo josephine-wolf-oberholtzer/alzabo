@@ -45,6 +45,6 @@ jobs:
     - name: Git LFS Pull
       run: git lfs pull
     - name: Build image
-      run: docker compose build api
+      run: make build
     - name: Push image
-      run: docker compose push api
+      run: make push

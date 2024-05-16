@@ -13,7 +13,7 @@ help: ## Print this help
 ### DOCKER
 
 build: ## Build Docker images
-	$(DC) --progress plain build --build-arg BUILDKIT_INLINE_CACHE=1
+	$(DC) --progress plain build --build-arg BUILDKIT_INLINE_CACHE=1 $(CONTAINER)
 
 up: up-datastores ## Bring up containers
 	$(DC) up -d
