@@ -18,6 +18,10 @@ jobs:
     name: Build image
     runs-on: ubuntu-latest
     steps:
+    - name: Remove unnecessary files
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: Checkout
       uses: actions/checkout@v4
     - name: Log in to the Container registry
@@ -41,6 +45,6 @@ jobs:
     - name: Git LFS Pull
       run: git lfs pull
     - name: Build image
-      run: make build
+      run: docker compose build api
     - name: Push image
-      run: make push
+      run: docker compose push api

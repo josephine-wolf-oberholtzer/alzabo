@@ -28,6 +28,7 @@ services:
     image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
     ports:
     - 8000:8000
+    shm_size: 256m
     ulimits:
       memlock: -1
       rtprio: 99
