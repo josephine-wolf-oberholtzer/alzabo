@@ -3,7 +3,7 @@ services:
   api:
     build:
       cache_from:
-      - ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+      - ghcr.io/josephine-wolf-oberholtzer/praetor
       context: .
       dockerfile: ./Dockerfile
     cap_add: [SYS_NICE]
@@ -25,7 +25,7 @@ services:
       PRAETOR_S3_ENDPOINT_URL: http://minio:9000
       PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
       PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
-    image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    image: ghcr.io/josephine-wolf-oberholtzer/praetor
     ports:
     - 8000:8000
     shm_size: 256m
@@ -39,7 +39,7 @@ services:
   worker:
     build:
       cache_from:
-      - ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+      - ghcr.io/josephine-wolf-oberholtzer/praetor
       context: .
       dockerfile: ./Dockerfile
     command:
@@ -63,7 +63,7 @@ services:
       PRAETOR_S3_ENDPOINT_URL: http://minio:9000
       PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
       PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
-    image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+    image: ghcr.io/josephine-wolf-oberholtzer/praetor
     volumes:
     - ./:/app
     - ./data/:/data
