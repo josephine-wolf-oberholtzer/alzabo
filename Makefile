@@ -16,7 +16,7 @@ build: ## Build Docker images
 	$(DC) --progress plain build --build-arg BUILDKIT_INLINE_CACHE=1 $(CONTAINER)
 
 up: up-datastores ## Bring up containers
-	$(DC) up -d
+	PRAETOR_CONFIG_PATH="praetor.server.yaml" $(DC) up -d
 
 up-datastores: ## Bring up Milvus containers
 	$(DC) up -d attu etcd milvus minio redis
