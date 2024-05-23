@@ -41,7 +41,7 @@ push: ## Push image to GHCR
 ### INGEST
 
 ingest: up ## Run the ingest pipeline
-	python -m praetor --api-url http://localhost:8000 audio-upload $(CORPUS_PATH)/**/*.wav $(CORPUS_PATH)/*.wav
+	python -m praetor --api-url http://localhost:8000 audio-upload $(CORPUS_PATH)/*.wav
 
 ingest-test: up ## Run the ingest pipeline
 	python -m praetor --api-url http://localhost:8000 audio-upload tests/recordings/*.wav
