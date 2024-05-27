@@ -3,27 +3,27 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/component: api
-    app.kubernetes.io/name: praetor
+    app.kubernetes.io/name: alzabo
   name: api
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: api
-      app.kubernetes.io/name: praetor
+      app.kubernetes.io/name: alzabo
   template:
     metadata:
       labels:
         app.kubernetes.io/component: api
-        app.kubernetes.io/name: praetor
+        app.kubernetes.io/name: alzabo
     spec:
       containers:
       - command:
         - gunicorn
-        - praetor.api:create_app()
-        image: ghcr.io/josephine-wolf-oberholtzer/praetor:latest
+        - alzabo.api:create_app()
+        image: ghcr.io/josephine-wolf-oberholtzer/alzabo:latest
         name: api
         ports:
         - containerPort: 8000
           name: http
-      serviceAccountName: praetor-eks
+      serviceAccountName: alzabo-eks
