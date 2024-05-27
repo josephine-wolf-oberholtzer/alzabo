@@ -4,7 +4,7 @@
 DC := docker compose
 DCR := $(DC) run --rm --cap-add SYS_NICE
 CONTAINER := api
-export CORPUS_PATH ?= ~/Dropbox/PraetorMix/ClassicMix
+export CORPUS_PATH ?= ~/Dropbox/AlzaboMix/ClassicMix
 export PRAETOR_CONFIG_PATH ?= alzabo.local.yaml
 
 help: ## Print this help

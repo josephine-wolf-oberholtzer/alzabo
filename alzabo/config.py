@@ -14,7 +14,7 @@ from .constants import ScsynthFeatures
 
 logger = logging.getLogger(__name__)
 
-ENV_PREFIX = "PRAETOR"
+ENV_PREFIX = "ALZABO"
 
 
 class ScsynthIndexConfig(TypedDict):
@@ -151,7 +151,7 @@ class ScsynthConfig(BaseSettings):
     output_device: str | None = None
 
 
-class PraetorConfig(BaseSettings):
+class AlzaboConfig(BaseSettings):
     analysis: AnalysisConfig = Field(default_factory=AnalysisConfig)
     api: ApiConfig = Field(default_factory=ApiConfig)
     application: ApplicationConfig = Field(default_factory=ApplicationConfig)
@@ -167,7 +167,7 @@ class PraetorConfig(BaseSettings):
 
 def _init_config():
     data = {}
-    if config_path := os.environ.get("PRAETOR_CONFIG_PATH"):
+    if config_path := os.environ.get("ALZABO_CONFIG_PATH"):
         if (path := Path(config_path)).exists():
             text = path.read_text()
             for loader in (yaml.safe_load, json.loads):
@@ -179,12 +179,12 @@ def _init_config():
             else:
                 logger.warning(f"Could not parse {path}")
         else:
-            logger.warning(f"PRAETOR_CONFIG_PATH {path} does not exist")
-    config = PraetorConfig(**data)
+            logger.warning(f"ALZABO_CONFIG_PATH {path} does not exist")
+    config = AlzaboConfig(**data)
     return config
 
 
 config = _init_config()
 
 
-__all__ = ["PraetorConfig", "config"]
+__all__ = ["AlzaboConfig", "config"]

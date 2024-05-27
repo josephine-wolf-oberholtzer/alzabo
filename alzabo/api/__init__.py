@@ -1,5 +1,5 @@
 """
-Praetor API
+Alzabo API
 """
 
 import aiohttp_cors
@@ -34,7 +34,7 @@ def create_app() -> web.Application:
     # openapi
     setup_aiohttp_apispec(
         app=app,
-        title="Praetor",
+        title="Alzabo",
         version="v1",
         url="/api/docs/swagger.json",
         swagger_path="/api/docs",
