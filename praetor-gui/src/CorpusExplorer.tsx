@@ -14,12 +14,11 @@ import { useAudio } from './app/hooks';
 import { RootState } from './app/store';
 import { config } from './config';
 import { selectors as corpusSelectors } from './features/corpus/corpusSelectors';
-import { listDigests, selectAxis, selectDigests, selectDurations } from './features/corpus/corpusSlice';
+import { listDigests, selectAxis, selectDigests } from './features/corpus/corpusSlice';
 import { Feature, ScsynthEntry, SelectedAxes } from './types';
 
 interface StateProps {
   digests: string[];
-  durations: [number, number];
   entries: { [key: string]: ScsynthEntry[] };
   isLoading: boolean;
   selectedAxes: SelectedAxes;
@@ -31,7 +30,6 @@ type Props = StateProps & DispatchProp;
 
 const mapStateToProps = (state: RootState): StateProps => ({
   digests: corpusSelectors.getDigests(state),
-  durations: corpusSelectors.getDurations(state),
   entries: corpusSelectors.getEntries(state),
   isLoading: corpusSelectors.getIsLoading(state),
   selectedAxes: corpusSelectors.getSelectedAxes(state),
@@ -40,7 +38,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 });
 
 const CorpusExplorer = (props: Props) => {
-  const { digests, dispatch, durations, entries, selectedAxes, selectedDigests, selectedEntries } = props;
+  const { digests, dispatch, entries, selectedAxes, selectedDigests, selectedEntries } = props;
   React.useEffect(() => {
     dispatch(listDigests());
   }, [dispatch]);

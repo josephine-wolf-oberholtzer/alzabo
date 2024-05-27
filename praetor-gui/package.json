@@ -24,7 +24,8 @@
     "react-plotly.js": "^2.6.0",
     "react-redux": "^9.0.4",
     "redux": "^5.0.0",
-    "redux-saga": "^1.2.3"
+    "redux-saga": "^1.2.3",
+    "yarn": "^1.22.22"
   },
   "resolutions": {
     "redux": "^5.0.0"
