@@ -6,8 +6,8 @@ from unittest import mock
 import aiohttp
 import pytest
 
-from praetor.config import config
-from praetor.constants import AUDIO_FILENAME
+from alzabo.config import config
+from alzabo.constants import AUDIO_FILENAME
 
 
 @pytest.mark.asyncio
@@ -23,8 +23,8 @@ async def test_batch(api_client, mocker, recordings_path, s3_client):
         )
         urls.append(f"s3://test-source/{filename}")
     uuids = [uuid.uuid4() for _ in range(len(urls))]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     response = await api_client.post("/audio/batch", json=dict(urls=urls))
     assert response.status == 200
     assert await response.json() == {"jobs": [str(x) for x in uuids]}
@@ -92,8 +92,8 @@ async def test_fetch(
 @pytest.mark.asyncio
 async def test_upload(api_client, filename, mocker, recordings_path, s3_client):
     uuids = [uuid.uuid4() for _ in range(2)]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     data = aiohttp.FormData()
     data.add_field("file", (recordings_path / filename).open("rb"))
     response = await api_client.post("/audio/upload", data=data)

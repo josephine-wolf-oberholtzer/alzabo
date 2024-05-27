@@ -15,9 +15,9 @@ from supriya import (
 from supriya.patterns import EventPattern, SequencePattern
 from uqbar.strings import normalize
 
-from praetor.client import Performer
-from praetor.client.synthdefs import hdverb, limiter
-from praetor.core.milvus import Entry
+from alzabo.client import Performer
+from alzabo.client.synthdefs import hdverb, limiter
+from alzabo.core.milvus import Entry
 
 
 @pytest.fixture

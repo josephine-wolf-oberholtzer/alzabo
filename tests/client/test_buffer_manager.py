@@ -6,7 +6,7 @@ import pytest
 from supriya import AsyncServer
 from supriya.osc import OscMessage
 
-from praetor.client import BufferManager
+from alzabo.client import BufferManager
 
 
 @pytest.mark.asyncio

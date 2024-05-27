@@ -1,6 +1,6 @@
 from uqbar.strings import normalize
 
-from praetor.client.synthdefs import hdverb, limiter
+from alzabo.client.synthdefs import hdverb, limiter
 
 
 def test_hdverb():

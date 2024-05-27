@@ -6,7 +6,7 @@ import pytest_asyncio
 from supriya import AsyncClock, AsyncServer, DoneAction, SynthDef, SynthDefBuilder
 from supriya.ugens import BufDur, Line, Out, PlayBuf
 
-from praetor.client import APIClient, Application, BufferManager, Performer
+from alzabo.client import APIClient, Application, BufferManager, Performer
 
 
 @pytest.fixture

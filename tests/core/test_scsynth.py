@@ -5,8 +5,8 @@ import pytest
 from supriya import SynthDef
 from uqbar.strings import normalize
 
-from praetor.constants import SCSYNTH_ANALYSIS_SIZE
-from praetor.core.scsynth import (
+from alzabo.constants import SCSYNTH_ANALYSIS_SIZE
+from alzabo.core.scsynth import (
     aggregate,
     analyze,
     build_offline_analysis_synthdef,

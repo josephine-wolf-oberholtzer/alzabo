@@ -1,4 +1,4 @@
-from praetor.worker import tasks
+from alzabo.worker import tasks
 
 
 def test_get_audio_processing_chain(

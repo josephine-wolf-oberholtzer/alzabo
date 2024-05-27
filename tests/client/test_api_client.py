@@ -6,15 +6,15 @@ from unittest import mock
 
 import pytest
 
-from praetor.client import APIClient
+from alzabo.client import APIClient
 
 
 @pytest.mark.asyncio
 async def test_audio_batch(api_client: APIClient, mocker) -> None:
     urls = ["s3://foo/bar/baz", "s3://quux/wux"]
     uuids = [uuid.uuid4() for _ in range(len(urls))]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     assert await api_client.audio_batch(urls=urls) == [str(_) for _ in uuids]
     assert mock_task.mock_calls == [
         mock.call(str(uuids[0]), urls[0]),
@@ -45,8 +45,8 @@ async def test_audio_upload(
     api_client: APIClient, mocker, recordings_path: Path
 ) -> None:
     uuids = [uuid.uuid4() for _ in range(2)]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     assert await api_client.audio_upload(path=recordings_path / "ibn-arabi-44100.wav")
     assert mock_task.mock_calls == [
         mock.call(str(uuids[0]), f"s3://test-uploads/{uuids[1]}"),

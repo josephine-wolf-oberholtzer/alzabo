@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from pymilvus import Collection
 
-from praetor.core import scsynth
+from alzabo.core import scsynth
 
 
 @pytest.mark.parametrize(

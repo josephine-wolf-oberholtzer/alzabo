@@ -8,8 +8,8 @@ import pytest
 from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
-from praetor import cli
-from praetor.cli import cli as cli_entrypoint
+from alzabo import cli
+from alzabo.cli import cli as cli_entrypoint
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def runner() -> CliRunner:
 
 
 def test_audio_batch(mocker: MockerFixture, runner: CliRunner) -> None:
-    mocker.patch("praetor.cli._audio_batch")
+    mocker.patch("alzabo.cli._audio_batch")
     result = runner.invoke(cli_entrypoint, ["audio-batch"])
     assert result.exit_code == 0, result.output
 
@@ -31,8 +31,8 @@ def test_audio_batch(mocker: MockerFixture, runner: CliRunner) -> None:
 @pytest.mark.asyncio
 async def test__audio_batch(api_server: str, mocker: MockerFixture) -> None:
     uuids = [uuid.uuid4() for _ in range(2)]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     await cli._audio_batch(urls=["s3://foo/bar/baz", "s3://quux/wux"])
     assert mock_task.mock_calls == [
         mock.call(str(uuids[0]), "s3://foo/bar/baz"),
@@ -43,7 +43,7 @@ async def test__audio_batch(api_server: str, mocker: MockerFixture) -> None:
 
 
 def test_audio_fetch(mocker: MockerFixture, runner: CliRunner) -> None:
-    mocker.patch("praetor.cli._audio_fetch")
+    mocker.patch("alzabo.cli._audio_fetch")
     result = runner.invoke(
         cli_entrypoint, ["audio-fetch", "deadbeef", "0", "1024", "foo/bar/baz.aif"]
     )
@@ -71,7 +71,7 @@ async def test__audio_fetch(api_server: str, data: None, tmp_path: Path) -> None
 def test_audio_upload(
     mocker: MockerFixture, recording_path: Path, runner: CliRunner
 ) -> None:
-    mocker.patch("praetor.cli._audio_upload")
+    mocker.patch("alzabo.cli._audio_upload")
     result = runner.invoke(cli_entrypoint, ["audio-upload", str(recording_path)])
     assert result.exit_code == 0, result.output
 
@@ -82,8 +82,8 @@ async def test__audio_upload(
 ) -> None:
     paths = (str(recording_path),)
     uuids = [uuid.uuid4() for _ in range(2)]
-    mocker.patch("praetor.api.audio.uuid4", side_effect=uuids)
-    mock_task = mocker.patch("praetor.worker.tasks.get_audio_processing_chain")
+    mocker.patch("alzabo.api.audio.uuid4", side_effect=uuids)
+    mock_task = mocker.patch("alzabo.worker.tasks.get_audio_processing_chain")
     await cli._audio_upload(paths, max_concurrency=1)
     assert mock_task.mock_calls == [
         mock.call(str(uuids[0]), f"s3://test-uploads/{uuids[1]}"),
@@ -102,7 +102,7 @@ def test_ensure_database(runner: CliRunner) -> None:
 
 
 def test_ping(mocker: MockerFixture, runner: CliRunner) -> None:
-    mocker.patch("praetor.cli._ping")
+    mocker.patch("alzabo.cli._ping")
     result = runner.invoke(cli_entrypoint, ["ping"])
     assert result.exit_code == 0, result.output
 
@@ -113,7 +113,7 @@ async def test__ping(api_server: str) -> None:
 
 
 def test_query_ast(mocker: MockerFixture, runner: CliRunner) -> None:
-    mocker.patch("praetor.cli._query_ast")
+    mocker.patch("alzabo.cli._query_ast")
     result = runner.invoke(cli_entrypoint, ["query-ast"])
     assert result.exit_code == 0, result.output
 
@@ -132,7 +132,7 @@ async def test__query_ast(api_server: str, data: None, recording_path: Path) -> 
 def test_query_ast_upload(
     mocker: MockerFixture, recording_path: Path, runner: CliRunner
 ) -> None:
-    mocker.patch("praetor.cli._query_ast_upload")
+    mocker.patch("alzabo.cli._query_ast_upload")
     result = runner.invoke(cli_entrypoint, ["query-ast-upload", str(recording_path)])
     assert result.exit_code == 0, result.output
 
@@ -149,7 +149,7 @@ async def test__query_ast_upload(
 
 
 def test_query_scsynth(mocker: MockerFixture, runner: CliRunner) -> None:
-    mocker.patch("praetor.cli._query_scsynth")
+    mocker.patch("alzabo.cli._query_scsynth")
     result = runner.invoke(cli_entrypoint, ["query-scsynth"])
     assert result.exit_code == 0, result.output
 
@@ -174,7 +174,7 @@ async def test__query_scsynth(
 def test_query_scsynth_upload(
     mocker: MockerFixture, recording_path: Path, runner: CliRunner
 ) -> None:
-    mocker.patch("praetor.cli._query_scsynth_upload")
+    mocker.patch("alzabo.cli._query_scsynth_upload")
     result = runner.invoke(
         cli_entrypoint, ["query-scsynth-upload", str(recording_path)]
     )
