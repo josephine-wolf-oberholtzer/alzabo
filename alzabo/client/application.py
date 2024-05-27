@@ -43,7 +43,7 @@ class PerformanceConfig(TypedDict):
 
 class Application:
     """
-    The Praetor Client application.
+    The Alzabo Client application.
 
     Harnesses together all application logic.
     """
@@ -59,7 +59,7 @@ class Application:
         self.context = AsyncServer()
         self.clock = AsyncClock()
         self.clock.change(beats_per_minute=60 * 4)
-        # Praetor non-pluggable classes
+        # Alzabo non-pluggable classes
         self.api_client = APIClient(
             api_url=str(config.api.url), api_key=config.api.key or None
         )
@@ -71,7 +71,7 @@ class Application:
         self.performer = Performer(
             buffer_manager=self.buffer_manager, clock=self.clock, context=self.context
         )
-        # Praetor pluggable classes
+        # Alzabo pluggable classes
         self.analyzer: OnlineScsynthAnalyzer = cast(
             Type[OnlineScsynthAnalyzer], import_class(config.application.analyzer_class)
         )(
@@ -91,7 +91,7 @@ class Application:
         self.pattern_factory: PatternFactory = cast(
             Type[PatternFactory], import_class(config.application.pattern_factory_class)
         )(context=self.context)
-        # Praetor state
+        # Alzabo state
         self.performance_config: dict[str, float] = dict(
             density=0.5, history=0.05, index=0.0, reverb=0.05, stretch=0.5
         )

@@ -4,7 +4,7 @@ from typing import Any, cast
 import pytest
 from supriya import AsyncServer, Bus, CalculationRate
 
-from praetor.client import OnlineScsynthAnalyzer
+from alzabo.client import OnlineScsynthAnalyzer
 
 
 @pytest.fixture

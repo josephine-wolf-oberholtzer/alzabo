@@ -3,9 +3,9 @@ import wave
 import pytest
 from botocore.exceptions import ClientError
 
-from praetor.config import config
-from praetor.constants import AUDIO_FILENAME
-from praetor.worker import audio
+from alzabo.config import config
+from alzabo.constants import AUDIO_FILENAME
+from alzabo.worker import audio
 
 
 @pytest.mark.parametrize(

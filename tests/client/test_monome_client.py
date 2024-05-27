@@ -3,9 +3,9 @@ import asyncio
 import pytest
 from pytest_mock import MockerFixture
 
-from praetor.client.commands import Command, NotifyCommand, PerformanceConfigCommand
-from praetor.client.monome_client import MonomeClient
-from praetor.config import ArcMapping, MonomeConfig
+from alzabo.client.commands import Command, NotifyCommand, PerformanceConfigCommand
+from alzabo.client.monome_client import MonomeClient
+from alzabo.config import ArcMapping, MonomeConfig
 
 
 @pytest.mark.asyncio

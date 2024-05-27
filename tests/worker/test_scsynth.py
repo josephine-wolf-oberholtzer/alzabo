@@ -6,13 +6,13 @@ from botocore.exceptions import ClientError
 from mypy_boto3_s3.client import S3Client
 from pymilvus import Collection
 
-from praetor.config import config
-from praetor.constants import (
+from alzabo.config import config
+from alzabo.constants import (
     AUDIO_FILENAME,
     SCSYNTH_ANALYSIS_RAW_FILENAME,
     SCSYNTH_ENTRIES_FILENAME,
 )
-from praetor.worker import audio, milvus, scsynth
+from alzabo.worker import audio, milvus, scsynth
 
 
 def test_analyze_via_scsynth(

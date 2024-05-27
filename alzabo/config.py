@@ -14,7 +14,7 @@ from .constants import ScsynthFeatures
 
 logger = logging.getLogger(__name__)
 
-ENV_PREFIX = "PRAETOR"
+ENV_PREFIX = "ALZABO"
 
 
 class ScsynthIndexConfig(TypedDict):
@@ -59,8 +59,8 @@ class AnalysisConfig(BaseSettings):
 class ApplicationConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_APPLICATION_")
 
-    analyzer_class: str = "praetor.client.analyzer.OnlineScsynthAnalyzer"
-    pattern_factory_class: str = "praetor.client.pattern_factory.PatternFactory"
+    analyzer_class: str = "alzabo.client.analyzer.OnlineScsynthAnalyzer"
+    pattern_factory_class: str = "alzabo.client.pattern_factory.PatternFactory"
 
 
 class ApiConfig(BaseSettings):
@@ -89,7 +89,7 @@ class MidiMapping(TypedDict):
 class MidiConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_MIDI_")
 
-    client_class: str = "praetor.client.midi_client.MidiClient"
+    client_class: str = "alzabo.client.midi_client.MidiClient"
     devices: dict[str, list[MidiMapping]] = Field(default_factory=dict)
     enabled: bool = False
 
@@ -110,7 +110,7 @@ class MonomeConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_MONOME_")
 
     arc: list[ArcMapping] = Field(default_factory=list)
-    client_class: str = "praetor.client.monome_client.MonomeClient"
+    client_class: str = "alzabo.client.monome_client.MonomeClient"
     enabled: bool = False
 
 
@@ -132,8 +132,8 @@ class S3Config(BaseSettings):
     access_key_id: str | None = None
     endpoint_url: str | None = None
     secret_access_key: str | None = None
-    data_bucket: str = "praetor-ai-data"
-    uploads_bucket: str = "praetor-ai-uploads"
+    data_bucket: str = "alzabo-ai-data"
+    uploads_bucket: str = "alzabo-ai-uploads"
 
 
 class ScsynthConfig(BaseSettings):
@@ -151,7 +151,7 @@ class ScsynthConfig(BaseSettings):
     output_device: str | None = None
 
 
-class PraetorConfig(BaseSettings):
+class AlzaboConfig(BaseSettings):
     analysis: AnalysisConfig = Field(default_factory=AnalysisConfig)
     api: ApiConfig = Field(default_factory=ApiConfig)
     application: ApplicationConfig = Field(default_factory=ApplicationConfig)
@@ -167,7 +167,7 @@ class PraetorConfig(BaseSettings):
 
 def _init_config():
     data = {}
-    if config_path := os.environ.get("PRAETOR_CONFIG_PATH"):
+    if config_path := os.environ.get("ALZABO_CONFIG_PATH"):
         if (path := Path(config_path)).exists():
             text = path.read_text()
             for loader in (yaml.safe_load, json.loads):
@@ -179,12 +179,12 @@ def _init_config():
             else:
                 logger.warning(f"Could not parse {path}")
         else:
-            logger.warning(f"PRAETOR_CONFIG_PATH {path} does not exist")
-    config = PraetorConfig(**data)
+            logger.warning(f"ALZABO_CONFIG_PATH {path} does not exist")
+    config = AlzaboConfig(**data)
     return config
 
 
 config = _init_config()
 
 
-__all__ = ["PraetorConfig", "config"]
+__all__ = ["AlzaboConfig", "config"]

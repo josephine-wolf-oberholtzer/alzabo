@@ -4,8 +4,8 @@ import pytest
 from supriya.contexts.realtime import BootStatus
 from uqbar.strings import normalize
 
-from praetor.client.application import Application
-from praetor.client.commands import FireCommand, QuitCommand
+from alzabo.client.application import Application
+from alzabo.client.commands import FireCommand, QuitCommand
 
 
 @pytest.mark.asyncio

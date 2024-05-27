@@ -18,14 +18,14 @@ def create_app() -> Celery:
     redis_connection = redis.from_url(str(config.redis.url))
 
     return Celery(
-        "praetor-worker",
+        "alzabo-worker",
         broker=str(config.redis.url),
         backend=str(config.redis.url),
         include=[
-            "praetor.worker.audio",
-            "praetor.worker.ast",
-            "praetor.worker.milvus",
-            "praetor.worker.scsynth",
+            "alzabo.worker.audio",
+            "alzabo.worker.ast",
+            "alzabo.worker.milvus",
+            "alzabo.worker.scsynth",
         ],
         task_cls=TaskClass,
     )

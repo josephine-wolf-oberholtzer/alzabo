@@ -13,7 +13,7 @@ from ..api.scsynth import QueryScsynthResponseType, QueryScsynthUploadResponseTy
 
 class APIClient:
     """
-    A client for talking to the Praetor Cloud API.
+    A client for talking to the Alzabo Cloud API.
     """
 
     def __init__(

@@ -3,12 +3,12 @@ services:
   api:
     build:
       cache_from:
-      - ghcr.io/josephine-wolf-oberholtzer/praetor
+      - ghcr.io/josephine-wolf-oberholtzer/alzabo
       context: .
       dockerfile: ./Dockerfile
     command:
     - gunicorn
-    - praetor.api:create_app()
+    - alzabo.api:create_app()
     environment:
       GUNICORN_CMD_ARGS: >-
         --access-logfile -
@@ -24,7 +24,7 @@ services:
       PRAETOR_S3_ENDPOINT_URL: http://minio:9000
       PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
       PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
-    image: ghcr.io/josephine-wolf-oberholtzer/praetor
+    image: ghcr.io/josephine-wolf-oberholtzer/alzabo
     ports:
     - 8000:8000
     shm_size: 256m
@@ -38,21 +38,21 @@ services:
   worker:
     build:
       cache_from:
-      - ghcr.io/josephine-wolf-oberholtzer/praetor
+      - ghcr.io/josephine-wolf-oberholtzer/alzabo
       context: .
       dockerfile: ./Dockerfile
     command:
     - watchmedo
     - auto-restart
     - --directory
-    - ./praetor
+    - ./alzabo
     - --recursive
     - --pattern
     - '*.py'
     - --
     - celery
     - -A
-    - praetor.worker.app:celery
+    - alzabo.worker.app:celery
     - worker
     - --concurrency=4
     - --loglevel=INFO
@@ -63,7 +63,7 @@ services:
       PRAETOR_S3_ENDPOINT_URL: http://minio:9000
       PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
       PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
-    image: ghcr.io/josephine-wolf-oberholtzer/praetor
+    image: ghcr.io/josephine-wolf-oberholtzer/alzabo
     volumes:
     - ./:/app
     - ./data/:/data

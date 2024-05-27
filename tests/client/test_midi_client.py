@@ -3,16 +3,16 @@ import asyncio
 import pytest
 from pytest_mock import MockerFixture
 
-from praetor.client.commands import Command, PerformanceConfigCommand
-from praetor.client.midi_client import MidiClient
-from praetor.config import MidiConfig, MidiMapping
+from alzabo.client.commands import Command, PerformanceConfigCommand
+from alzabo.client.midi_client import MidiClient
+from alzabo.config import MidiConfig, MidiMapping
 
 
 @pytest.mark.asyncio
 async def test_MidiClient(mocker: MockerFixture) -> None:
-    mocker.patch("praetor.client.midi_client.MidiIn")
+    mocker.patch("alzabo.client.midi_client.MidiIn")
     mocker.patch(
-        "praetor.client.midi_client.list_input_ports",
+        "alzabo.client.midi_client.list_input_ports",
         return_value=["Mock Faderboard", "Mock Knobboard", "Mock Keyboard"],
     )
     command_queue: asyncio.Queue[Command] = asyncio.Queue()

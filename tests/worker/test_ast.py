@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from praetor.config import config
-from praetor.constants import AST_ENTRIES_FILENAME, AUDIO_FILENAME
-from praetor.worker import ast, milvus
+from alzabo.config import config
+from alzabo.constants import AST_ENTRIES_FILENAME, AUDIO_FILENAME
+from alzabo.worker import ast, milvus
 
 
 @pytest.mark.parametrize("hops", [[500], [250, 500]])

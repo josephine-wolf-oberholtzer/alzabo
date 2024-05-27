@@ -34,7 +34,7 @@ const App = () => {
             sx={{ mr: 2 }}
             variant="h6"
           >
-            praetor
+            alzabo
           </Typography>
           <Divider
             flexItem

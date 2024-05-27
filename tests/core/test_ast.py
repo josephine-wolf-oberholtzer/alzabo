@@ -4,7 +4,7 @@ import pytest
 import torch
 import torch.nn
 
-from praetor.core.ast import (
+from alzabo.core.ast import (
     analyze,
     extract_features,
     load_labels,

@@ -15,17 +15,17 @@ from pymilvus import Collection, utility
 from supriya.contexts import AsyncServer
 from supriya.osc import find_free_port
 
-import praetor.api
-import praetor.core.milvus
-import praetor.worker
-from praetor.config import config
-from praetor.core.s3 import create_s3_client
+import alzabo.api
+import alzabo.core.milvus
+import alzabo.worker
+from alzabo.config import config
+from alzabo.core.s3 import create_s3_client
 
 
 @pytest.fixture(autouse=True)
 def logging_setup(caplog) -> None:
     caplog.set_level(logging.WARNING)
-    for logger in ("aiohttp", "praetor", "supriya"):
+    for logger in ("aiohttp", "alzabo", "supriya"):
         caplog.set_level(logging.INFO, logger=logger)
 
 
@@ -50,11 +50,11 @@ async def context() -> AsyncGenerator[AsyncServer, None]:
 
 
 @pytest_asyncio.fixture
-async def api_server(praetor_config, monkeypatch) -> AsyncGenerator[str, None]:
+async def api_server(alzabo_config, monkeypatch) -> AsyncGenerator[str, None]:
     """
     An AIOHTTP TestServer wrapping the Praetor API.
     """
-    server = TestServer(praetor.api.create_app())
+    server = TestServer(alzabo.api.create_app())
     await server.start_server()
     api_url = f"{server.scheme}://{server.host}:{server.port}"
     monkeypatch.setattr(config.api, "url", api_url)
@@ -63,16 +63,16 @@ async def api_server(praetor_config, monkeypatch) -> AsyncGenerator[str, None]:
 
 
 @pytest.fixture(autouse=True)
-def celery_app(praetor_config: None) -> Celery:
-    app = praetor.worker.create_app()
+def celery_app(alzabo_config: None) -> Celery:
+    app = alzabo.worker.create_app()
     app.conf.task_always_eager = True
     return app
 
 
 @pytest.fixture(autouse=True)
-def praetor_config(monkeypatch) -> None:
+def alzabo_config(monkeypatch) -> None:
     """
-    Patch praetor's config
+    Patch alzabo's config
     """
     monkeypatch.setattr(config.analysis, "ast_collection_prefix", "test_ast")
     monkeypatch.setattr(config.analysis, "scsynth_collection_prefix", "test_scsynth")
@@ -99,30 +99,30 @@ def data(
             Filename=path,
             Key=str(path.relative_to(data_path)),
         )
-    praetor.worker.tasks.insert_ast_entries(
+    alzabo.worker.tasks.insert_ast_entries(
         [
             str(uuid.uuid4()),
             "af5ec6ae3e17614ebf7c2575dc8870cfbb32f12e5b7edabbdda2b02b8b9b7e5f",
         ]
     )
-    praetor.worker.tasks.insert_scsynth_entries(
+    alzabo.worker.tasks.insert_scsynth_entries(
         [
             str(uuid.uuid4()),
             "dd88610b66f3f053243f8f315345381fc70bca20d48ba32e27a7841d7676f969",
         ]
     )
-    praetor.worker.tasks.flush_milvus()
+    alzabo.worker.tasks.flush_milvus()
 
 
 @pytest.fixture(scope="session")
 def milvus() -> None:
-    praetor.core.milvus.connect()
+    alzabo.core.milvus.connect()
 
 
 @pytest.fixture
 def milvus_ast_collection(milvus) -> Collection:
-    utility.drop_collection(praetor.core.ast.get_ast_collection_name())
-    collection = praetor.core.ast.create_ast_collection()
+    utility.drop_collection(alzabo.core.ast.get_ast_collection_name())
+    collection = alzabo.core.ast.create_ast_collection()
     collection.load()
     return collection
 
@@ -132,9 +132,9 @@ def milvus_scsynth_collections(milvus) -> dict[str | None, Collection]:
     collections = {}
     for index_config in config.analysis.scsynth_indices:
         utility.drop_collection(
-            praetor.core.scsynth.get_scsynth_collection_name(index_config["alias"])
+            alzabo.core.scsynth.get_scsynth_collection_name(index_config["alias"])
         )
-        collection = praetor.core.scsynth.create_scsynth_collection(
+        collection = alzabo.core.scsynth.create_scsynth_collection(
             index_config["alias"]
         )
         collection.load()
@@ -165,7 +165,7 @@ def requests_mocker(requests_adapter) -> Generator[requests_mock.Mocker, None, N
 
 
 @pytest.fixture(autouse=True)
-def s3_client(praetor_config):
+def s3_client(alzabo_config):
     """
     Mock out S3, and create default buckets
     """

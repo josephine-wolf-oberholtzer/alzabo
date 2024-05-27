@@ -8,7 +8,7 @@ authors = [
   {name = "Marek Poliks", email = "mpoliks@gmail.com"},
 ]
 dynamic = ["dependencies"]
-name = "praetor"
+name = "alzabo"
 readme = "README.md"
 requires-python = ">= 3.11, < 3.12"
 version = "24.1b2"
@@ -32,7 +32,7 @@ plugins = [
 addopts = "-vv --durations=10 --cov-branch"
 
 [tool.setuptools]
-packages = ["praetor"]
+packages = ["alzabo"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
