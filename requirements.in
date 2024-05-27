@@ -19,7 +19,7 @@ numpy
 pip-tools
 pydantic-settings
 pyjwt
-pymilvus == 2.3.2
+pymilvus == 2.3.7
 pymonome
 pytest
 pytest-aiohttp

@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 
 DC := docker compose
-DCR := $(DC) run --rm
+DCR := $(DC) run --rm --cap-add SYS_NICE
 CONTAINER := api
 export CORPUS_PATH ?= ~/Dropbox/PraetorMix/ClassicMix
 export PRAETOR_CONFIG_PATH ?= praetor.local.yaml
@@ -89,16 +89,16 @@ kubeval:
 ### TESTING
 
 pytest: up-datastores ## Run pytest
-	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest
+	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest
 
 pytest-cov: up-datastores ## Run pytest with coverage
-	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest --cov=praetor --cov-report=html --cov-report=term --durations=10
+	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --cov=praetor --cov-report=html --cov-report=term --durations=10
 
 pytest-x: up-datastores ## Run pytest and fail fast
-	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest -x
+	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest -x
 
 pytest-sw: up-datastores ## Run pytest and fail fast
-	PRAETOR_CONFIG_PATH="" $(DCR) $(CONTAINER) pytest --sw
+	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --sw
 
 test: reformat lint pytest-cov
 

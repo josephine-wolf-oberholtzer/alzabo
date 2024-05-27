@@ -6,7 +6,6 @@ services:
       - ghcr.io/josephine-wolf-oberholtzer/praetor
       context: .
       dockerfile: ./Dockerfile
-    cap_add: [SYS_NICE]
     command:
     - gunicorn
     - praetor.api:create_app()
@@ -55,6 +54,7 @@ services:
     - -A
     - praetor.worker.app:celery
     - worker
+    - --concurrency=4
     - --loglevel=INFO
     environment:
       PRAETOR_AST_ENABLED: "${PRAETOR_AST_ENABLED:-true}"
@@ -149,7 +149,7 @@ services:
       start_period: 90s
       timeout: 20s
       retries: 3
-    image: milvusdb/milvus:v2.3.5
+    image: milvusdb/milvus:v2.3.15
     ports:
     - 19530:19530
     - 9091:9091

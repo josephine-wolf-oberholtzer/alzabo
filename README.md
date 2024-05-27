@@ -1,6 +1,6 @@
 # Praetor
 
-A distributed concatenative synthesis engine.
+A distributed concatenative synthesis and audio analysis engine.
 
 ## Setup
 
