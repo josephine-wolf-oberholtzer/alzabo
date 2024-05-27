@@ -59,8 +59,8 @@ class AnalysisConfig(BaseSettings):
 class ApplicationConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_APPLICATION_")
 
-    analyzer_class: str = "praetor.client.analyzer.OnlineScsynthAnalyzer"
-    pattern_factory_class: str = "praetor.client.pattern_factory.PatternFactory"
+    analyzer_class: str = "alzabo.client.analyzer.OnlineScsynthAnalyzer"
+    pattern_factory_class: str = "alzabo.client.pattern_factory.PatternFactory"
 
 
 class ApiConfig(BaseSettings):
@@ -89,7 +89,7 @@ class MidiMapping(TypedDict):
 class MidiConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_MIDI_")
 
-    client_class: str = "praetor.client.midi_client.MidiClient"
+    client_class: str = "alzabo.client.midi_client.MidiClient"
     devices: dict[str, list[MidiMapping]] = Field(default_factory=dict)
     enabled: bool = False
 
@@ -110,7 +110,7 @@ class MonomeConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix=f"{ENV_PREFIX}_MONOME_")
 
     arc: list[ArcMapping] = Field(default_factory=list)
-    client_class: str = "praetor.client.monome_client.MonomeClient"
+    client_class: str = "alzabo.client.monome_client.MonomeClient"
     enabled: bool = False
 
 
@@ -132,8 +132,8 @@ class S3Config(BaseSettings):
     access_key_id: str | None = None
     endpoint_url: str | None = None
     secret_access_key: str | None = None
-    data_bucket: str = "praetor-ai-data"
-    uploads_bucket: str = "praetor-ai-uploads"
+    data_bucket: str = "alzabo-ai-data"
+    uploads_bucket: str = "alzabo-ai-uploads"
 
 
 class ScsynthConfig(BaseSettings):

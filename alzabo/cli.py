@@ -230,7 +230,7 @@ def query_scsynth_upload(
 def run():
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
-    logging.getLogger("praetor").setLevel(logging.INFO)
+    logging.getLogger("alzabo").setLevel(logging.INFO)
     logging.getLogger("supriya.osc").setLevel(logging.WARNING)
     logging.getLogger("supriya.udp").setLevel(logging.INFO)
     logging.getLogger("supriya.scsynth").setLevel(logging.INFO)
