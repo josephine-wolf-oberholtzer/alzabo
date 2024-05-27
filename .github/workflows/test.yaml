@@ -31,7 +31,7 @@ jobs:
         tar xf kubeval-linux-amd64.tar.gz
         sudo cp kubeval /usr/local/bin
     - name: Kustomize build
-      run: kubectl kustomize kubernetes/praetor/base
+      run: kubectl kustomize kubernetes/alzabo/base
     - name: Kubeval
       run: make kubeval
 
@@ -52,7 +52,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Pull image
       run: |
-        docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest || true
+        docker pull ghcr.io/josephine-wolf-oberholtzer/alzabo:latest || true
     - name: Build image
       run: make build
     - name: Black
@@ -82,7 +82,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Pull image
       run: |
-        docker pull ghcr.io/josephine-wolf-oberholtzer/praetor:latest || true
+        docker pull ghcr.io/josephine-wolf-oberholtzer/alzabo:latest || true
     - name: Create LFS file list
       run: git lfs ls-files -l | cut -d ' ' -f1 | sort > .lfs-assets-id
     - name: Restore LFS cache
