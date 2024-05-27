@@ -1,4 +1,4 @@
-# Praetor
+# Alzabo
 
 A distributed concatenative synthesis and audio analysis engine.
 
@@ -23,7 +23,7 @@ pip install -e .
 Get help:
 
 ```
-python -m praetor --help
+python -m alzabo --help
 ```
 
 ### Load audio into the corpus
@@ -31,7 +31,7 @@ python -m praetor --help
 Batch audio upload via URLs:
 
 ```
-python -m praetor \
+python -m alzabo \
     audio-batch \
         s3://test-source/bloodborne-dialog.mp3 \
         s3://test-source/bloodborne-enemy-dialog.mp3 \
@@ -46,7 +46,7 @@ python -m praetor \
 Direct upload an audio file:
 
 ```
-python -m praetor \
+python -m alzabo \
     audio-upload \
         tests/recordings/ibn-arabi-44100.wav
 ```
@@ -56,7 +56,7 @@ python -m praetor \
 Upload audio, analyze via scsynth, and query:
 
 ```
-python -m praetor \
+python -m alzabo \
     query-scsynth-upload \
         tests/recordings/ibn-arabi-44100-1s.wav
 ```
@@ -64,7 +64,7 @@ python -m praetor \
 Query via scsynth vector:
 
 ```
-python -m praetor \
+python -m alzabo \
     query-scsynth -- \
         65.12738627115885 \
         -53.331234178235455 \
@@ -87,7 +87,7 @@ python -m praetor \
 Upload audio, analyze via AST, and query:
 
 ```
-python -m praetor \
+python -m alzabo \
     query-ast-upload \
         tests/recordings/ibn-arabi-44100-1s.wav
 ```
@@ -97,7 +97,7 @@ python -m praetor \
 Fetch audio segment:
 
 ```
-python -m praetor \
+python -m alzabo \
     audio-fetch \
         ade95a26d07c28af966ec474445379cae82d96c2bc30913b93e972702d9fb208 \
         82756096 \

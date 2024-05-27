@@ -5,7 +5,7 @@ DC := docker compose
 DCR := $(DC) run --rm --cap-add SYS_NICE
 CONTAINER := api
 export CORPUS_PATH ?= ~/Dropbox/PraetorMix/ClassicMix
-export PRAETOR_CONFIG_PATH ?= praetor.local.yaml
+export PRAETOR_CONFIG_PATH ?= alzabo.local.yaml
 
 help: ## Print this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-z0-9A-Z_-]+:.*?## / {printf "%-30s%s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -16,7 +16,7 @@ build: ## Build Docker images
 	$(DC) --progress plain build --build-arg BUILDKIT_INLINE_CACHE=1 $(CONTAINER)
 
 up: up-datastores ## Bring up containers
-	PRAETOR_CONFIG_PATH="praetor.server.yaml" $(DC) up -d
+	PRAETOR_CONFIG_PATH="alzabo.server.yaml" $(DC) up -d
 
 up-datastores: ## Bring up Milvus containers
 	$(DC) up -d attu etcd milvus minio redis
@@ -41,21 +41,21 @@ push: ## Push image to GHCR
 ### INGEST
 
 ingest: up ## Run the ingest pipeline
-	python -m praetor --api-url http://localhost:8000 audio-upload $(CORPUS_PATH)/*.wav
+	python -m alzabo --api-url http://localhost:8000 audio-upload $(CORPUS_PATH)/*.wav
 
 ingest-test: up ## Run the ingest pipeline
-	python -m praetor --api-url http://localhost:8000 audio-upload tests/recordings/*.wav
+	python -m alzabo --api-url http://localhost:8000 audio-upload tests/recordings/*.wav
 
 ### CLIENT
 
 client: up ## Run the client
-	python -m praetor --api-url http://localhost:8000 run
+	python -m alzabo --api-url http://localhost:8000 run
 
 client-x: ## Run the client
-	python -m praetor --api-url http://localhost:8000 run
+	python -m alzabo --api-url http://localhost:8000 run
 
 client-es9: ## Run the client with ES-9
-	PRAETOR_CONFIG_PATH=praetor.es9.yaml python -m praetor --api-url http://localhost:8000 run
+	PRAETOR_CONFIG_PATH=alzabo.es9.yaml python -m alzabo --api-url http://localhost:8000 run
 
 ### FORMATTING
 
@@ -84,7 +84,7 @@ mypy: ## Type-check via mypy
 	$(DCR) $(CONTAINER) mypy .
 
 kubeval:
-	kubectl kustomize kubernetes/praetor/base | kubeval --strict
+	kubectl kustomize kubernetes/alzabo/base | kubeval --strict
 
 ### TESTING
 
@@ -92,7 +92,7 @@ pytest: up-datastores ## Run pytest
 	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest
 
 pytest-cov: up-datastores ## Run pytest with coverage
-	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --cov=praetor --cov-report=html --cov-report=term --durations=10
+	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --cov=alzabo --cov-report=html --cov-report=term --durations=10
 
 pytest-x: up-datastores ## Run pytest and fail fast
 	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest -x
@@ -105,10 +105,10 @@ test: reformat lint pytest-cov
 ### MISC
 
 ensure-buckets:
-	$(DCR) $(CONTAINER) python3 -m praetor ensure-buckets
+	$(DCR) $(CONTAINER) python3 -m alzabo ensure-buckets
 
 ensure-database:
-	$(DCR) $(CONTAINER) python3 -m praetor ensure-database
+	$(DCR) $(CONTAINER) python3 -m alzabo ensure-database
 
 pip-compile: ## Rebuild requirements.txt
 	python -m piptools compile

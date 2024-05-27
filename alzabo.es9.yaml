@@ -28,21 +28,21 @@ api:
   key: null
   url: http://api:8000/
 application:
-  analyzer_class: praetor.client.analyzer.OnlineScsynthAnalyzer
-  pattern_factory_class: praetor.client.pattern_factory.PatternFactory
+  analyzer_class: alzabo.client.analyzer.OnlineScsynthAnalyzer
+  pattern_factory_class: alzabo.client.pattern_factory.PatternFactory
 ast:
   checkpoint_path: data/ast/audioset_model.pth
   enabled: false
   labels_path: data/ast/audioset_labels.csv
 midi:
-  client_class: praetor.client.midi_client.MidiClient
+  client_class: alzabo.client.midi_client.MidiClient
   devices: {}
   enabled: false
 milvus:
   url: http://milvus:19530/
 monome:
   arc: []
-  client_class: praetor.client.monome_client.MonomeClient
+  client_class: alzabo.client.monome_client.MonomeClient
   enabled: false
 open_telemetry:
   enabled: false
@@ -50,10 +50,10 @@ redis:
   url: redis://redis:6379/0
 s3:
   access_key_id: minioadmin
-  data_bucket: praetor-ai-data
+  data_bucket: alzabo-ai-data
   endpoint_url: http://minio:9000
   secret_access_key: minioadmin
-  uploads_bucket: praetor-ai-uploads
+  uploads_bucket: alzabo-ai-uploads
 scsynth:
   block_size: 256
   enabled: true
