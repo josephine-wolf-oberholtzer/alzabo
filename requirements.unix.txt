@@ -36,7 +36,7 @@ amqp==5.2.0
     # via kombu
 annotated-types==0.7.0
     # via pydantic
-anyio==4.3.0
+anyio==4.4.0
     # via
     #   httpx
     #   jupyter-server
@@ -75,7 +75,7 @@ beautifulsoup4==4.12.3
     # via nbconvert
 billiard==4.2.0
     # via celery
-black==24.4.2
+black[jupyter]==24.4.2
     # via
     #   -r requirements.in
     #   uqbar
@@ -85,7 +85,7 @@ boto3==1.34.106
     # via
     #   -r requirements.in
     #   moto
-boto3-stubs[s3]==1.34.111
+boto3-stubs[s3]==1.34.113
     # via -r requirements.in
 botocore==1.34.106
     # via
@@ -134,7 +134,7 @@ comm==0.2.2
     #   ipywidgets
 contourpy==1.2.1
     # via matplotlib
-coverage[toml]==7.5.1
+coverage[toml]==7.5.2
     # via pytest-cov
 cryptography==42.0.7
     # via
@@ -164,7 +164,7 @@ filelock==3.14.0
     #   triton
 flake8==7.0.0
     # via -r requirements.in
-fonttools==4.51.0
+fonttools==4.52.4
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -203,6 +203,7 @@ ipykernel==6.29.4
     #   qtconsole
 ipython==8.24.0
     # via
+    #   black
     #   ipykernel
     #   ipywidgets
     #   jupyter-console
@@ -247,7 +248,7 @@ jsonschema-specifications==2023.12.1
     # via jsonschema
 jupyter==1.0.0
     # via supriya
-jupyter-client==8.6.1
+jupyter-client==8.6.2
     # via
     #   ipykernel
     #   jupyter-console
@@ -280,7 +281,7 @@ jupyter-server==2.14.0
     #   notebook-shim
 jupyter-server-terminals==0.5.3
     # via jupyter-server
-jupyterlab==4.2.0
+jupyterlab==4.2.1
     # via notebook
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -322,7 +323,7 @@ minio==7.2.7
     # via pymilvus
 mistune==3.0.2
     # via nbconvert
-moto==5.0.7
+moto==5.0.8
     # via -r requirements.in
 mpmath==1.3.0
     # via sympy
@@ -462,12 +463,12 @@ pooch==1.8.1
     # via librosa
 prometheus-client==0.20.0
     # via jupyter-server
-prompt-toolkit==3.0.43
+prompt-toolkit==3.0.44
     # via
     #   click-repl
     #   ipython
     #   jupyter-console
-protobuf==5.26.1
+protobuf==5.27.0
     # via pymilvus
 psutil==5.9.8
     # via ipykernel
@@ -616,7 +617,7 @@ scikit-learn==1.5.0
     # via
     #   -r requirements.in
     #   librosa
-scipy==1.13.0
+scipy==1.13.1
     # via
     #   librosa
     #   scikit-learn
@@ -681,6 +682,8 @@ timm==0.4.5
     # via -r requirements.in
 tinycss2==1.3.0
     # via nbconvert
+tokenize-rt==5.2.0
+    # via black
 torch==2.3.0
     # via
     #   timm
@@ -727,13 +730,13 @@ types-python-dateutil==2.9.0.20240316
     # via arrow
 types-pyyaml==6.0.12.20240311
     # via -r requirements.in
-types-requests==2.32.0.20240521
+types-requests==2.32.0.20240523
     # via -r requirements.in
 types-s3transfer==0.10.1
     # via boto3-stubs
 types-ujson==5.10.0.20240515
     # via -r requirements.in
-typing-extensions==4.11.0
+typing-extensions==4.12.0
     # via
     #   azure-core
     #   azure-storage-blob
@@ -775,7 +778,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-watchdog[watchmedo]==4.0.0
+watchdog[watchmedo]==4.0.1
     # via -r requirements.in
 wcwidth==0.2.13
     # via prompt-toolkit

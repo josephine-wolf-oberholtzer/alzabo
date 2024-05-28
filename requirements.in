@@ -5,7 +5,7 @@ aiohttp
 aiohttp-apispec == 3.0.0b2
 aiohttp-cors
 aioprometheus[aiohttp]
-black
+black[jupyter]
 boto3
 boto3-stubs[s3]
 celery[redis]
