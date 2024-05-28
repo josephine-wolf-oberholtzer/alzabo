@@ -17,13 +17,13 @@ services:
         --reload
         --workers 2
         --worker-class aiohttp.GunicornUVLoopWebWorker
-      PRAETOR_API_AUTH_ENABLED: "${PRAETOR_API_AUTH_ENABLED:-false}"
-      PRAETOR_AST_ENABLED: "${PRAETOR_AST_ENABLED:-true}"
-      PRAETOR_CONFIG_PATH: "${PRAETOR_CONFIG_PATH:-}"
-      PRAETOR_S3_ACCESS_KEY_ID: minioadmin
-      PRAETOR_S3_ENDPOINT_URL: http://minio:9000
-      PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
-      PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
+      ALZABO_API_AUTH_ENABLED: "${ALZABO_API_AUTH_ENABLED:-false}"
+      ALZABO_AST_ENABLED: "${ALZABO_AST_ENABLED:-true}"
+      ALZABO_CONFIG_PATH: "${ALZABO_CONFIG_PATH:-}"
+      ALZABO_S3_ACCESS_KEY_ID: minioadmin
+      ALZABO_S3_ENDPOINT_URL: http://minio:9000
+      ALZABO_S3_SECRET_ACCESS_KEY: minioadmin
+      ALZABO_SCSYNTH_ENABLED: "${ALZABO_SCSYNTH_ENABLED:-true}"
     image: ghcr.io/josephine-wolf-oberholtzer/alzabo
     ports:
     - 8000:8000
@@ -57,12 +57,12 @@ services:
     - --concurrency=4
     - --loglevel=INFO
     environment:
-      PRAETOR_AST_ENABLED: "${PRAETOR_AST_ENABLED:-true}"
-      PRAETOR_CONFIG_PATH: "${PRAETOR_CONFIG_PATH:-}"
-      PRAETOR_S3_ACCESS_KEY_ID: minioadmin
-      PRAETOR_S3_ENDPOINT_URL: http://minio:9000
-      PRAETOR_S3_SECRET_ACCESS_KEY: minioadmin
-      PRAETOR_SCSYNTH_ENABLED: "${PRAETOR_SCSYNTH_ENABLED:-true}"
+      ALZABO_AST_ENABLED: "${ALZABO_AST_ENABLED:-true}"
+      ALZABO_CONFIG_PATH: "${ALZABO_CONFIG_PATH:-}"
+      ALZABO_S3_ACCESS_KEY_ID: minioadmin
+      ALZABO_S3_ENDPOINT_URL: http://minio:9000
+      ALZABO_S3_SECRET_ACCESS_KEY: minioadmin
+      ALZABO_SCSYNTH_ENABLED: "${ALZABO_SCSYNTH_ENABLED:-true}"
     image: ghcr.io/josephine-wolf-oberholtzer/alzabo
     volumes:
     - ./:/app

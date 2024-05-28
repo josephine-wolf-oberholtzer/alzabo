@@ -5,7 +5,7 @@ DC := docker compose
 DCR := $(DC) run --rm --cap-add SYS_NICE
 CONTAINER := api
 export CORPUS_PATH ?= ~/Dropbox/AlzaboMix/ClassicMix
-export PRAETOR_CONFIG_PATH ?= alzabo.local.yaml
+export ALZABO_CONFIG_PATH ?= alzabo.local.yaml
 
 help: ## Print this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-z0-9A-Z_-]+:.*?## / {printf "%-30s%s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -16,7 +16,7 @@ build: ## Build Docker images
 	$(DC) --progress plain build --build-arg BUILDKIT_INLINE_CACHE=1 $(CONTAINER)
 
 up: up-datastores ## Bring up containers
-	PRAETOR_CONFIG_PATH="alzabo.server.yaml" $(DC) up -d
+	ALZABO_CONFIG_PATH="alzabo.server.yaml" $(DC) up -d
 
 up-datastores: ## Bring up Milvus containers
 	$(DC) up -d attu etcd milvus minio redis
@@ -55,7 +55,7 @@ client-x: ## Run the client
 	python -m alzabo --api-url http://localhost:8000 run
 
 client-es9: ## Run the client with ES-9
-	PRAETOR_CONFIG_PATH=alzabo.es9.yaml python -m alzabo --api-url http://localhost:8000 run
+	ALZABO_CONFIG_PATH=alzabo.es9.yaml python -m alzabo --api-url http://localhost:8000 run
 
 ### FORMATTING
 
@@ -89,16 +89,16 @@ kubeval:
 ### TESTING
 
 pytest: up-datastores ## Run pytest
-	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest
+	ALZABO_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest
 
 pytest-cov: up-datastores ## Run pytest with coverage
-	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --cov=alzabo --cov-report=html --cov-report=term --durations=10
+	ALZABO_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --cov=alzabo --cov-report=html --cov-report=term --durations=10
 
 pytest-x: up-datastores ## Run pytest and fail fast
-	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest -x
+	ALZABO_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest -x
 
 pytest-sw: up-datastores ## Run pytest and fail fast
-	PRAETOR_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --sw
+	ALZABO_CONFIG_PATH="" $(DCR) --cap-add SYS_NICE $(CONTAINER) pytest --sw
 
 test: reformat lint pytest-cov
 
