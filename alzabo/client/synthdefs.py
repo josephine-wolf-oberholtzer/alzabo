@@ -1,5 +1,6 @@
 from supriya import DoneAction, SynthDef, SynthDefBuilder, synthdef
 from supriya.ugens import (
+    HPF,
     LPF,
     AllpassL,
     BufDur,
@@ -8,6 +9,7 @@ from supriya.ugens import (
     DelayN,
     ExpRand,
     In,
+    LFDNoise3,
     LFNoise2,
     LeakDC,
     Limiter,
@@ -19,6 +21,7 @@ from supriya.ugens import (
     PlayBuf,
     ReplaceOut,
     UGenOperable,
+    Warp1,
 )
 
 
@@ -39,18 +42,72 @@ def build_aux_send(channel_count=2) -> SynthDef:
 
 
 def build_basic_playback(channel_count=2) -> SynthDef:
-    with SynthDefBuilder(amplitude=1.0, buffer_id=0, out=0, panning=0) as builder:
+    with SynthDefBuilder(buffer_id=0, gain=0.0, out=0, panning=0) as builder:
         in_ = PlayBuf.ar(buffer_id=builder["buffer_id"], channel_count=1, loop=0)
         envelope = Line.kr(
             duration=BufDur.kr(buffer_id=builder["buffer_id"]),
             done_action=DoneAction.FREE_SYNTH,
         ).hanning_window()
-        source = in_ * envelope * builder["amplitude"]
+        source = in_ * envelope * builder["gain"].db_to_amplitude()
         panned = PanAz.ar(
             channel_count=channel_count, source=source, position=builder["panning"]
         )
         Out.ar(bus=builder["out"], source=panned)
     return builder.build(name="basic-playback")
+
+
+def build_warp_playback(channel_count=2) -> SynthDef:
+    with SynthDefBuilder(
+        buffer_id=0,
+        gain=0.0,
+        highpass_frequency=100.0,
+        out=0,
+        overlaps=4,
+        panning=0.0,
+        start=0.0,
+        stop=1.0,
+        time_scaling=1.0,
+        transposition=0.0,
+    ) as builder:
+        duration = BufDur.kr(buffer_id=builder["buffer_id"]) * builder["time_scaling"]
+        window = Line.kr(
+            duration=duration, done_action=DoneAction.FREE_SYNTH
+        ).hanning_window()
+        pointer = Line.kr(
+            start=builder["start"], stop=builder["stop"], duration=duration
+        )
+        signals = []
+        for _ in range(2):
+            window_size = LFDNoise3.kr(
+                frequency=ExpRand.ir(minimum=0.01, maximum=0.1)
+            ).scale(-1, 1, 0.05, 0.5)
+            position = builder["panning"] * LFNoise2.kr(frequency=0.5).scale(
+                -1, 1, 0.5, 1
+            )
+            frequency_scaling = (
+                builder["transposition"] + (LFNoise2.kr(frequency=0.1) * 0.25)
+            ).semitones_to_ratio()
+            signal = Warp1.ar(
+                buffer_id=builder["buffer_id"],
+                frequency_scaling=frequency_scaling,
+                interpolation=4,
+                overlaps=builder["overlaps"],
+                pointer=(
+                    (pointer + LFNoise2.kr(frequency=1.0) * 0.05).clip(0.0, 1.0)
+                    * ((duration - window_size) / duration)
+                ),
+                window_rand_ratio=0.15,
+                window_size=window_size,
+            )
+            signal = HPF.ar(source=signal, frequency=builder["highpass_frequency"])
+            signal *= window * 0.5 * builder["gain"].db_to_amplitude()
+            signal = PanAz.ar(
+                channel_count=channel_count, source=signal, position=position
+            )
+            signals.append(signal)
+        signal = LeakDC.ar(source=Mix.multichannel(signals, 2)) / 2.0
+        Out.ar(bus=builder["out"], source=signal)
+    return builder.build(name="warp-playback")
 
 
 @synthdef()

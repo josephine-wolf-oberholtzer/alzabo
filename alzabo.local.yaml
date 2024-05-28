@@ -41,9 +41,21 @@ midi:
 milvus:
   url: http://milvus:19530/
 monome:
-  arc: []
+  arc:
+  - path: density
+    ring: 0
+    type: through
+  - path: history
+    ring: 1
+    type: through
+  - path: stretch
+    ring: 2
+    type: through
+  - path: index
+    ring: 3
+    type: through
   client_class: alzabo.client.monome_client.MonomeClient
-  enabled: false
+  enabled: true
 open_telemetry:
   enabled: false
 redis:

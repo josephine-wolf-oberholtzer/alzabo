@@ -1,6 +1,329 @@
 from uqbar.strings import normalize
 
-from alzabo.client.synthdefs import hdverb, limiter
+from alzabo.client.synthdefs import (
+    build_aux_send,
+    build_basic_playback,
+    build_warp_playback,
+    hdverb,
+    limiter,
+)
+
+
+def test_build_aux_send():
+    assert str(build_aux_send()) == normalize(
+        """
+        synthdef:
+            name: aux-send
+            ugens:
+            -   Control.kr:
+                    aux_out: 0.0
+                    gate: 1.0
+                    mix: 0.5
+                    out: 0.0
+            -   In.ar:
+                    bus: Control.kr[3:out]
+            -   Linen.kr:
+                    gate: Control.kr[1:gate]
+                    attack_time: 0.25
+                    sustain_level: 1.0
+                    release_time: 5.0
+                    done_action: 2.0
+            -   BinaryOpUGen(MULTIPLICATION).ar/0:
+                    left: In.ar[0]
+                    right: Linen.kr[0]
+            -   BinaryOpUGen(MULTIPLICATION).ar/1:
+                    left: BinaryOpUGen(MULTIPLICATION).ar/0[0]
+                    right: Control.kr[2:mix]
+            -   BinaryOpUGen(MULTIPLICATION).ar/2:
+                    left: In.ar[1]
+                    right: Linen.kr[0]
+            -   BinaryOpUGen(MULTIPLICATION).ar/3:
+                    left: BinaryOpUGen(MULTIPLICATION).ar/2[0]
+                    right: Control.kr[2:mix]
+            -   Out.ar/0:
+                    bus: Control.kr[0:aux_out]
+                    source[0]: BinaryOpUGen(MULTIPLICATION).ar/1[0]
+                    source[1]: BinaryOpUGen(MULTIPLICATION).ar/3[0]
+            -   BinaryOpUGen(SUBTRACTION).kr:
+                    left: 1.0
+                    right: Control.kr[2:mix]
+            -   BinaryOpUGen(MULTIPLICATION).ar/4:
+                    left: BinaryOpUGen(MULTIPLICATION).ar/0[0]
+                    right: BinaryOpUGen(SUBTRACTION).kr[0]
+            -   BinaryOpUGen(MULTIPLICATION).ar/5:
+                    left: BinaryOpUGen(MULTIPLICATION).ar/2[0]
+                    right: BinaryOpUGen(SUBTRACTION).kr[0]
+            -   Out.ar/1:
+                    bus: Control.kr[3:out]
+                    source[0]: BinaryOpUGen(MULTIPLICATION).ar/4[0]
+                    source[1]: BinaryOpUGen(MULTIPLICATION).ar/5[0]
+        """
+    )
+
+
+def test_build_basic_playback():
+    assert str(build_basic_playback()) == normalize(
+        """
+        synthdef:
+            name: basic-playback
+            ugens:
+            -   Control.kr:
+                    buffer_id: 0.0
+                    gain: 0.0
+                    out: 0.0
+                    panning: 0.0
+            -   PlayBuf.ar:
+                    buffer_id: Control.kr[0:buffer_id]
+                    rate: 1.0
+                    trigger: 1.0
+                    start_position: 0.0
+                    loop: 0.0
+                    done_action: 0.0
+            -   BufDur.kr:
+                    buffer_id: Control.kr[0:buffer_id]
+            -   Line.kr:
+                    start: 0.0
+                    stop: 1.0
+                    duration: BufDur.kr[0]
+                    done_action: 2.0
+            -   UnaryOpUGen(HANNING_WINDOW).kr:
+                    source: Line.kr[0]
+            -   BinaryOpUGen(MULTIPLICATION).ar/0:
+                    left: PlayBuf.ar[0]
+                    right: UnaryOpUGen(HANNING_WINDOW).kr[0]
+            -   UnaryOpUGen(DB_TO_AMPLITUDE).kr:
+                    source: Control.kr[1:gain]
+            -   BinaryOpUGen(MULTIPLICATION).ar/1:
+                    left: BinaryOpUGen(MULTIPLICATION).ar/0[0]
+                    right: UnaryOpUGen(DB_TO_AMPLITUDE).kr[0]
+            -   PanAz.ar:
+                    source: BinaryOpUGen(MULTIPLICATION).ar/1[0]
+                    position: Control.kr[3:panning]
+                    amplitude: 1.0
+                    width: 2.0
+                    orientation: 0.5
+            -   Out.ar:
+                    bus: Control.kr[2:out]
+                    source[0]: PanAz.ar[0]
+                    source[1]: PanAz.ar[1]
+        """
+    )
+
+
+def test_build_warp_playback():
+    assert str(build_warp_playback()) == normalize(
+        """
+        synthdef:
+            name: warp-playback
+            ugens:
+            -   Control.kr:
+                    buffer_id: 0.0
+                    gain: 0.0
+                    highpass_frequency: 100.0
+                    out: 0.0
+                    overlaps: 4.0
+                    panning: 0.0
+                    start: 0.0
+                    stop: 1.0
+                    time_scaling: 1.0
+                    transposition: 0.0
+            -   BufDur.kr:
+                    buffer_id: Control.kr[0:buffer_id]
+            -   BinaryOpUGen(MULTIPLICATION).kr/0:
+                    left: BufDur.kr[0]
+                    right: Control.kr[8:time_scaling]
+            -   Line.kr/0:
+                    start: 0.0
+                    stop: 1.0
+                    duration: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+                    done_action: 2.0
+            -   UnaryOpUGen(HANNING_WINDOW).kr:
+                    source: Line.kr/0[0]
+            -   BinaryOpUGen(MULTIPLICATION).kr/1:
+                    left: UnaryOpUGen(HANNING_WINDOW).kr[0]
+                    right: 0.5
+            -   BinaryOpUGen(MULTIPLICATION).kr/2:
+                    left: UnaryOpUGen(HANNING_WINDOW).kr[0]
+                    right: 0.5
+            -   Line.kr/1:
+                    start: Control.kr[6:start]
+                    stop: Control.kr[7:stop]
+                    duration: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+                    done_action: 0.0
+            -   UnaryOpUGen(DB_TO_AMPLITUDE).kr/0:
+                    source: Control.kr[1:gain]
+            -   BinaryOpUGen(MULTIPLICATION).kr/3:
+                    left: BinaryOpUGen(MULTIPLICATION).kr/1[0]
+                    right: UnaryOpUGen(DB_TO_AMPLITUDE).kr/0[0]
+            -   UnaryOpUGen(DB_TO_AMPLITUDE).kr/1:
+                    source: Control.kr[1:gain]
+            -   BinaryOpUGen(MULTIPLICATION).kr/4:
+                    left: BinaryOpUGen(MULTIPLICATION).kr/2[0]
+                    right: UnaryOpUGen(DB_TO_AMPLITUDE).kr/1[0]
+            -   ExpRand.ir/0:
+                    minimum: 0.01
+                    maximum: 0.1
+            -   LFDNoise3.kr/0:
+                    frequency: ExpRand.ir/0[0]
+            -   MulAdd.kr/0:
+                    source: LFDNoise3.kr/0[0]
+                    multiplier: 0.225
+                    addend: 0.275
+            -   BinaryOpUGen(SUBTRACTION).kr/0:
+                    left: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+                    right: MulAdd.kr/0[0]
+            -   BinaryOpUGen(FLOAT_DIVISION).kr/0:
+                    left: BinaryOpUGen(SUBTRACTION).kr/0[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+            -   LFNoise2.kr/0:
+                    frequency: 0.5
+            -   MulAdd.kr/1:
+                    source: LFNoise2.kr/0[0]
+                    multiplier: 0.25
+                    addend: 0.75
+            -   BinaryOpUGen(MULTIPLICATION).kr/5:
+                    left: Control.kr[5:panning]
+                    right: MulAdd.kr/1[0]
+            -   LFNoise2.kr/1:
+                    frequency: 0.1
+            -   BinaryOpUGen(MULTIPLICATION).kr/6:
+                    left: LFNoise2.kr/1[0]
+                    right: 0.25
+            -   BinaryOpUGen(ADDITION).kr/0:
+                    left: Control.kr[9:transposition]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/6[0]
+            -   UnaryOpUGen(SEMITONES_TO_RATIO).kr/0:
+                    source: BinaryOpUGen(ADDITION).kr/0[0]
+            -   LFNoise2.kr/2:
+                    frequency: 1.0
+            -   BinaryOpUGen(MULTIPLICATION).kr/7:
+                    left: LFNoise2.kr/2[0]
+                    right: 0.05
+            -   BinaryOpUGen(ADDITION).kr/1:
+                    left: Line.kr/1[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/7[0]
+            -   Clip.kr/0:
+                    source: BinaryOpUGen(ADDITION).kr/1[0]
+                    minimum: 0.0
+                    maximum: 1.0
+            -   BinaryOpUGen(MULTIPLICATION).kr/8:
+                    left: Clip.kr/0[0]
+                    right: BinaryOpUGen(FLOAT_DIVISION).kr/0[0]
+            -   Warp1.ar/0:
+                    buffer_id: Control.kr[0:buffer_id]
+                    pointer: BinaryOpUGen(MULTIPLICATION).kr/8[0]
+                    frequency_scaling: UnaryOpUGen(SEMITONES_TO_RATIO).kr/0[0]
+                    window_size: MulAdd.kr/0[0]
+                    envelope_buffer_id: -1.0
+                    overlaps: Control.kr[4:overlaps]
+                    window_rand_ratio: 0.15
+                    interpolation: 4.0
+            -   HPF.ar/0:
+                    source: Warp1.ar/0[0]
+                    frequency: Control.kr[2:highpass_frequency]
+            -   BinaryOpUGen(MULTIPLICATION).ar/0:
+                    left: HPF.ar/0[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/3[0]
+            -   PanAz.ar/0:
+                    source: BinaryOpUGen(MULTIPLICATION).ar/0[0]
+                    position: BinaryOpUGen(MULTIPLICATION).kr/5[0]
+                    amplitude: 1.0
+                    width: 2.0
+                    orientation: 0.5
+            -   ExpRand.ir/1:
+                    minimum: 0.01
+                    maximum: 0.1
+            -   LFDNoise3.kr/1:
+                    frequency: ExpRand.ir/1[0]
+            -   MulAdd.kr/2:
+                    source: LFDNoise3.kr/1[0]
+                    multiplier: 0.225
+                    addend: 0.275
+            -   BinaryOpUGen(SUBTRACTION).kr/1:
+                    left: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+                    right: MulAdd.kr/2[0]
+            -   BinaryOpUGen(FLOAT_DIVISION).kr/1:
+                    left: BinaryOpUGen(SUBTRACTION).kr/1[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/0[0]
+            -   LFNoise2.kr/3:
+                    frequency: 0.5
+            -   MulAdd.kr/3:
+                    source: LFNoise2.kr/3[0]
+                    multiplier: 0.25
+                    addend: 0.75
+            -   BinaryOpUGen(MULTIPLICATION).kr/9:
+                    left: Control.kr[5:panning]
+                    right: MulAdd.kr/3[0]
+            -   LFNoise2.kr/4:
+                    frequency: 0.1
+            -   BinaryOpUGen(MULTIPLICATION).kr/10:
+                    left: LFNoise2.kr/4[0]
+                    right: 0.25
+            -   BinaryOpUGen(ADDITION).kr/2:
+                    left: Control.kr[9:transposition]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/10[0]
+            -   UnaryOpUGen(SEMITONES_TO_RATIO).kr/1:
+                    source: BinaryOpUGen(ADDITION).kr/2[0]
+            -   LFNoise2.kr/5:
+                    frequency: 1.0
+            -   BinaryOpUGen(MULTIPLICATION).kr/11:
+                    left: LFNoise2.kr/5[0]
+                    right: 0.05
+            -   BinaryOpUGen(ADDITION).kr/3:
+                    left: Line.kr/1[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/11[0]
+            -   Clip.kr/1:
+                    source: BinaryOpUGen(ADDITION).kr/3[0]
+                    minimum: 0.0
+                    maximum: 1.0
+            -   BinaryOpUGen(MULTIPLICATION).kr/12:
+                    left: Clip.kr/1[0]
+                    right: BinaryOpUGen(FLOAT_DIVISION).kr/1[0]
+            -   Warp1.ar/1:
+                    buffer_id: Control.kr[0:buffer_id]
+                    pointer: BinaryOpUGen(MULTIPLICATION).kr/12[0]
+                    frequency_scaling: UnaryOpUGen(SEMITONES_TO_RATIO).kr/1[0]
+                    window_size: MulAdd.kr/2[0]
+                    envelope_buffer_id: -1.0
+                    overlaps: Control.kr[4:overlaps]
+                    window_rand_ratio: 0.15
+                    interpolation: 4.0
+            -   HPF.ar/1:
+                    source: Warp1.ar/1[0]
+                    frequency: Control.kr[2:highpass_frequency]
+            -   BinaryOpUGen(MULTIPLICATION).ar/1:
+                    left: HPF.ar/1[0]
+                    right: BinaryOpUGen(MULTIPLICATION).kr/4[0]
+            -   PanAz.ar/1:
+                    source: BinaryOpUGen(MULTIPLICATION).ar/1[0]
+                    position: BinaryOpUGen(MULTIPLICATION).kr/9[0]
+                    amplitude: 1.0
+                    width: 2.0
+                    orientation: 0.5
+            -   BinaryOpUGen(ADDITION).ar/0:
+                    left: PanAz.ar/0[0]
+                    right: PanAz.ar/1[0]
+            -   LeakDC.ar/0:
+                    source: BinaryOpUGen(ADDITION).ar/0[0]
+                    coefficient: 0.995
+            -   BinaryOpUGen(FLOAT_DIVISION).ar/0:
+                    left: LeakDC.ar/0[0]
+                    right: 2.0
+            -   BinaryOpUGen(ADDITION).ar/1:
+                    left: PanAz.ar/0[1]
+                    right: PanAz.ar/1[1]
+            -   LeakDC.ar/1:
+                    source: BinaryOpUGen(ADDITION).ar/1[0]
+                    coefficient: 0.995
+            -   BinaryOpUGen(FLOAT_DIVISION).ar/1:
+                    left: LeakDC.ar/1[0]
+                    right: 2.0
+            -   Out.ar:
+                    bus: Control.kr[3:out]
+                    source[0]: BinaryOpUGen(FLOAT_DIVISION).ar/0[0]
+                    source[1]: BinaryOpUGen(FLOAT_DIVISION).ar/1[0]
+        """
+    )
 
 
 def test_hdverb():

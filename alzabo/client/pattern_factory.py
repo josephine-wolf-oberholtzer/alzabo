@@ -10,7 +10,7 @@ from supriya.patterns import (
     SequencePattern,
 )
 
-from .synthdefs import build_aux_send, build_basic_playback
+from .synthdefs import build_aux_send, build_basic_playback, build_warp_playback
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +33,7 @@ class PatternFactory:
         self.synthdefs: dict[str, SynthDef] = {
             "aux-send": build_aux_send(channel_count),
             "basic-playback": build_basic_playback(channel_count),
+            "warp-playback": build_warp_playback(channel_count),
         }
 
     async def setup(self) -> None:
@@ -45,7 +46,7 @@ class PatternFactory:
         logger.info(f"Tearing down {type(self).__name__} ...")
 
     def emit(self, **kwargs: float) -> PatternFactoryCallback:
-        return self.emit_basic(**kwargs)
+        return self.emit_warp(**kwargs)
 
     def emit_basic(self, **kwargs: float) -> PatternFactoryCallback:
         def basic_pattern_factory(
@@ -70,3 +71,27 @@ class PatternFactory:
             )
 
         return basic_pattern_factory
+
+    def emit_warp(self, **kwargs: float) -> PatternFactoryCallback:
+        def warp_pattern_factory(
+            buffers: Sequence[Buffer], reverb_bus_group: BusGroup
+        ) -> Pattern:
+            return BusPattern(
+                channel_count=self.channel_count,
+                pattern=FxPattern(
+                    pattern=EventPattern(
+                        amplitude=0.5,
+                        buffer_id=SequencePattern(buffers),
+                        delta=RandomPattern(0.25, 0.5),
+                        duration=0.0,  # < 0 duration means no note off
+                        panning=RandomPattern(-1.0, 1.0),
+                        synthdef=self.synthdefs["warp-playback"],
+                    ),
+                    aux_out=reverb_bus_group,
+                    mix=kwargs.get("reverb"),
+                    release_time=5.0,
+                    synthdef=self.synthdefs["aux-send"],
+                ),
+            )
+
+        return warp_pattern_factory

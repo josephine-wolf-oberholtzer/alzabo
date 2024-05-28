@@ -161,7 +161,7 @@ class Application:
         # ... emit aggregate
         try:
             aggregate = self.analyzer.emit(
-                size=int(1000 * self.performance_config["history"])
+                size=int(1000 * (self.performance_config["history"] ** 2))
             )
         except ValueError:
             logger.warning("... analysis not primed!")
@@ -195,7 +195,7 @@ class Application:
             entries=entries, pattern_factory=pattern_factory
         )
 
-    async def fire_periodic(self):
+    async def fire_periodic(self) -> None:
         """
         Fire off patterns periodically.
         """
@@ -205,9 +205,9 @@ class Application:
                 await self.command_queue.put(FireCommand())
             await asyncio.sleep(0.1)
 
-    async def notify_listeners(self):
+    async def notify_listeners(self) -> None:
         for listener in self.listeners:
-            await listener.notify()
+            await listener.notify(self.performance_config)
 
     async def quit(self) -> None:
         """

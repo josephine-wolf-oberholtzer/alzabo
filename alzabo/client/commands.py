@@ -43,7 +43,7 @@ class PerformanceConfigCommand(Command):
                 app.performance_config[self.path] = float(
                     not bool(app.performance_config.get(self.path, False))
                 )
-        app.notify_listeners()
+        await app.notify_listeners()
 
 
 @dataclasses.dataclass(frozen=True)

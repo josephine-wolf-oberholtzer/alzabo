@@ -77,7 +77,8 @@ class MonomeClient(monome.ArcApp, Listener):
         self.buffer.render(self.arc)
 
     async def setup(self) -> None:
+        logger.info(f"Setting up {type(self).__name__} ...")
         await self.serialosc.connect()
 
     async def teardown(self) -> None:
-        pass
+        logger.info(f"Tearing down {type(self).__name__} ...")
