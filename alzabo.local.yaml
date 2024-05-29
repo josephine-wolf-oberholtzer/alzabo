@@ -11,9 +11,10 @@ analysis:
   - alias: null
     features:
     - r:f0:mean
+    - r:chroma
     - r:mfcc:13
-    - r:onsets
     - r:rms:mean
+    - r:rms:std
     pitched: true
   - alias: chroma-z
     features:
@@ -51,7 +52,7 @@ monome:
   - path: stretch
     ring: 2
     type: through
-  - path: index
+  - path: reverb
     ring: 3
     type: through
   client_class: alzabo.client.monome_client.MonomeClient

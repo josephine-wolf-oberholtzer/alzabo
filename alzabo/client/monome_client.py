@@ -12,7 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 class MonomeClient(monome.ArcApp, Listener):
-    def __init__(self, *, command_queue: asyncio.Queue[Command], config: MonomeConfig):
+
+    CLAMP_MAX = 50.0
+
+    def __init__(self, *, command_queue: asyncio.Queue[Command], config: MonomeConfig) -> None:
         super().__init__()
         self.arc_positions: list[float] = [0.0] * 4
         self.background_tasks: set[asyncio.Task] = set()
@@ -25,13 +28,13 @@ class MonomeClient(monome.ArcApp, Listener):
     async def notify(self, performance_config: dict[str, float]) -> None:
         for arc_mapping in self.config.arc:
             if arc_mapping["path"] in performance_config:
-                self.positions[arc_mapping["ring"]] = (
-                    performance_config[arc_mapping["path"]] * 50.0
+                self.arc_positions[arc_mapping["ring"]] = (
+                    performance_config[arc_mapping["path"]] * self.CLAMP_MAX
                 )
 
     def on_arc_delta(self, ring: int, delta: int) -> None:
         self.arc_positions[ring] = clamp(
-            self.arc_positions[ring] + (delta / 8), 0.0, 50.0
+            self.arc_positions[ring] + (delta / 8), 0.0, self.CLAMP_MAX
         )
         logger.info(f"{ring=} {delta=} {self.arc_positions=}")
         self.render_arc()
@@ -42,19 +45,19 @@ class MonomeClient(monome.ArcApp, Listener):
                 PerformanceConfigCommand(
                     path=arc_mapping["path"],
                     type_=arc_mapping.get("type", "through"),
-                    value=self.arc_positions[ring] / 50.0,
+                    value=self.arc_positions[ring] / self.CLAMP_MAX,
                 )
             )
 
-    def on_arc_disconnect(self):
+    def on_arc_disconnect(self) -> None:
         logger.info("Arc disconnected.")
 
-    def on_arc_ready(self):
+    def on_arc_ready(self) -> None:
         logger.info("Ready, clearing all rings...")
         self.command_queue.put_nowait(NotifyCommand())
         self.render_arc()
 
-    def on_device_added(self, id, type, port):
+    def on_device_added(self, id, type, port) -> None:
         if "arc" not in type:
             logger.info(
                 f"ignoring {id} ({type}) as device does not appear to be an arc"
@@ -65,7 +68,7 @@ class MonomeClient(monome.ArcApp, Listener):
         self.background_tasks.add(task)
         task.add_done_callback(self.background_tasks.discard)
 
-    def render_arc(self):
+    def render_arc(self) -> None:
         for ring in range(4):
             self.buffer.ring_all(ring, 0)
             self.buffer.ring_range(ring, 32 - 7, 32 + 7, 3)

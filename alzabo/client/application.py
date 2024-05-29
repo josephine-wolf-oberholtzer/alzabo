@@ -184,7 +184,10 @@ class Application:
         if not (
             entries := (
                 await self.api_client.query_scsynth(
-                    index=index_alias, vector=vector, voiced=aggregate["is_voiced"]
+                    index=index_alias,
+                    limit=15,
+                    vector=vector,
+                    voiced=aggregate["is_voiced"],
                 )
             )["entries"]
         ):

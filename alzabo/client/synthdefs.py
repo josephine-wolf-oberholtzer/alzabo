@@ -60,7 +60,6 @@ def build_warp_playback(channel_count=2) -> SynthDef:
     with SynthDefBuilder(
         buffer_id=0,
         gain=0.0,
-        highpass_frequency=100.0,
         out=0,
         overlaps=4,
         panning=0.0,
@@ -73,11 +72,13 @@ def build_warp_playback(channel_count=2) -> SynthDef:
         window = Line.kr(
             duration=duration, done_action=DoneAction.FREE_SYNTH
         ).hanning_window()
+        window *= builder["gain"].db_to_amplitude() / builder["overlaps"]
         pointer = Line.kr(
             start=builder["start"], stop=builder["stop"], duration=duration
         )
         signals = []
-        for _ in range(2):
+        layers = 2
+        for _ in range(layers):
             window_size = LFDNoise3.kr(
                 frequency=ExpRand.ir(minimum=0.01, maximum=0.1)
             ).scale(-1, 1, 0.05, 0.5)
@@ -99,13 +100,12 @@ def build_warp_playback(channel_count=2) -> SynthDef:
                 window_rand_ratio=0.15,
                 window_size=window_size,
             )
-            signal = HPF.ar(source=signal, frequency=builder["highpass_frequency"])
-            signal *= window * 0.5 * builder["gain"].db_to_amplitude()
+            signal *= window
             signal = PanAz.ar(
                 channel_count=channel_count, source=signal, position=position
             )
             signals.append(signal)
-        signal = LeakDC.ar(source=Mix.multichannel(signals, 2)) / 2.0
+        signal = LeakDC.ar(source=Mix.multichannel(signals, channel_count)) / layers
         Out.ar(bus=builder["out"], source=signal)
     return builder.build(name="warp-playback")
 
