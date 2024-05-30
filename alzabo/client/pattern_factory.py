@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import Protocol, Sequence
 
 from supriya import AsyncServer, Buffer, BusGroup, Pattern, SynthDef
@@ -10,6 +11,7 @@ from supriya.patterns import (
     SequencePattern,
 )
 
+from ..core.utils import amplitude_to_decibels
 from .synthdefs import build_aux_send, build_basic_playback, build_warp_playback
 
 logger = logging.getLogger(__name__)
@@ -45,10 +47,12 @@ class PatternFactory:
     async def teardown(self) -> None:
         logger.info(f"Tearing down {type(self).__name__} ...")
 
-    def emit(self, **kwargs: float) -> PatternFactoryCallback:
-        return self.emit_warp(**kwargs)
+    def emit(self, polyphony_limit: int, **kwargs: float) -> PatternFactoryCallback:
+        return self.emit_warp(polyphony_limit=polyphony_limit, **kwargs)
 
-    def emit_basic(self, **kwargs: float) -> PatternFactoryCallback:
+    def emit_basic(
+        self, polyphony_limit: int, **kwargs: float
+    ) -> PatternFactoryCallback:
         def basic_pattern_factory(
             buffers: Sequence[Buffer], reverb_bus_group: BusGroup
         ) -> Pattern:
@@ -60,6 +64,7 @@ class PatternFactory:
                         buffer_id=SequencePattern(buffers),
                         delta=RandomPattern(0.25, 0.5),
                         duration=0.0,  # < 0 duration means no note off
+                        gain=amplitude_to_decibels(1.0 / math.sqrt(polyphony_limit)),
                         panning=RandomPattern(-1.0, 1.0),
                         synthdef=self.synthdefs["basic-playback"],
                     ),
@@ -72,7 +77,9 @@ class PatternFactory:
 
         return basic_pattern_factory
 
-    def emit_warp(self, **kwargs: float) -> PatternFactoryCallback:
+    def emit_warp(
+        self, polyphony_limit: int, **kwargs: float
+    ) -> PatternFactoryCallback:
         def warp_pattern_factory(
             buffers: Sequence[Buffer], reverb_bus_group: BusGroup
         ) -> Pattern:
@@ -84,6 +91,7 @@ class PatternFactory:
                         buffer_id=SequencePattern(buffers),
                         delta=RandomPattern(0.25, 0.5),
                         duration=0.0,  # < 0 duration means no note off
+                        gain=amplitude_to_decibels(1.0 / math.sqrt(polyphony_limit)),
                         overlaps=8,
                         panning=RandomPattern(-1.0, 1.0),
                         synthdef=self.synthdefs["warp-playback"],

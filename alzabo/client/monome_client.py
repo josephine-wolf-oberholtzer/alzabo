@@ -15,7 +15,9 @@ class MonomeClient(monome.ArcApp, Listener):
 
     CLAMP_MAX = 50.0
 
-    def __init__(self, *, command_queue: asyncio.Queue[Command], config: MonomeConfig) -> None:
+    def __init__(
+        self, *, command_queue: asyncio.Queue[Command], config: MonomeConfig
+    ) -> None:
         super().__init__()
         self.arc_positions: list[float] = [0.0] * 4
         self.background_tasks: set[asyncio.Task] = set()

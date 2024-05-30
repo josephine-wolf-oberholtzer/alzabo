@@ -1,6 +1,5 @@
 from supriya import DoneAction, SynthDef, SynthDefBuilder, synthdef
 from supriya.ugens import (
-    HPF,
     LPF,
     AllpassL,
     BufDur,

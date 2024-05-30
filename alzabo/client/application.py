@@ -55,6 +55,7 @@ class Application:
         self.boot_future: asyncio.Future | None = None
         self.quit_future: asyncio.Future | None = None
         self.periodic_tasks: list[asyncio.Task] = []
+        self.polyphony_limit = 32
         # Supriya
         self.context = AsyncServer()
         self.clock = AsyncClock()
@@ -69,7 +70,10 @@ class Application:
             download_directory=Path(tempfile.mkdtemp()),
         )
         self.performer = Performer(
-            buffer_manager=self.buffer_manager, clock=self.clock, context=self.context
+            buffer_manager=self.buffer_manager,
+            clock=self.clock,
+            context=self.context,
+            polyphony_limit=self.polyphony_limit,
         )
         # Alzabo pluggable classes
         self.analyzer: OnlineScsynthAnalyzer = cast(
@@ -161,7 +165,7 @@ class Application:
         # ... emit aggregate
         try:
             aggregate = self.analyzer.emit(
-                size=int(1000 * (self.performance_config["history"] ** 2))
+                size=max(1, int(1000 * (self.performance_config["history"] ** 2)))
             )
         except ValueError:
             logger.warning("... analysis not primed!")
@@ -177,7 +181,9 @@ class Application:
             )
         ]
         # ... get pattern factory
-        pattern_factory = self.pattern_factory.emit(**self.performance_config)
+        pattern_factory = self.pattern_factory.emit(
+            polyphony_limit=self.polyphony_limit, **self.performance_config
+        )
         # ... query milvus
         vector = aggregate_to_vector(aggregate, index_alias=index_alias)
         logger.info(f"{index_alias=} {vector=}")

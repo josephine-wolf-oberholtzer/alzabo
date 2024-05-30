@@ -55,7 +55,8 @@ class OnlineScsynthAnalyzer:
             while self.osc_callbacks:
                 self.context.osc_protocol.unregister(self.osc_callbacks.pop())
 
-    def emit(self, size=1000) -> Aggregate:
+    def emit(self, size: int = 1000) -> Aggregate:
+        size = max(size, 1)
         if size > self.array.shape[0]:
             raise ValueError(size, self.array.shape[0])
         if size > self.max_index:

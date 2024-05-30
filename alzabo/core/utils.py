@@ -13,6 +13,14 @@ def clamp(value: float, minimum: float, maximum: float) -> float:
     return max(min(value, maximum), minimum)
 
 
+def amplitude_to_decibels(amplitude: float) -> float:
+    return 20.0 * math.log10(amplitude)
+
+
+def decibels_to_amplitude(decibels: float) -> float:
+    return math.pow(10.0, decibels / 20.0)
+
+
 def hash_path(path: Path):
     with path.open("rb") as file_pointer:
         return file_digest(file_pointer, "sha256").hexdigest()
